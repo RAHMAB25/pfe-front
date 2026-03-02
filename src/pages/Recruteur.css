@@ -1,0 +1,99 @@
+.recruteur-page {
+  display: flex;
+  height: 100vh;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Sidebar */
+.recruteur-sidebar {
+  width: 250px;
+  background-color: #68716f;
+  color: white;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.recruteur-sidebar h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.recruteur-sidebar button {
+  width: 100%;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: transparent;
+  color: white;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.recruteur-sidebar button:hover {
+  background-color: #223c37;
+}
+
+.recruteur-sidebar button.active {
+  background-color: #929b9a;
+  color: #1a302a;
+}
+
+.btn-logout {
+  margin-top: auto;
+  background-color: #e74c3c;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.btn-logout:hover {
+  background-color: #c0392b;
+}
+
+/* Contenu */
+.recruteur-content {
+  flex: 1;
+  background-color: #f4f4f4;
+  padding: 40px;
+  overflow-y: auto;
+}
+
+.recruteur-content h2 {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.recruteur-content p {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .recruteur-page {
+    flex-direction: column;
+  }
+
+  .recruteur-sidebar {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 10px;
+  }
+
+  .recruteur-sidebar button {
+    margin: 0 10px;
+    white-space: nowrap;
+  }
+
+  .recruteur-content {
+    padding: 20px;
+  }
+}
