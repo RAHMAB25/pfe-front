@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css';
 import Homepage from "./pages/Homepage";
 import Creation from './pages/Creation';
-import Condidat from "./pages/Condidat";
-import Recruteur from "./pages/Recruteur";
+import Condidat from './pages/dossierC/Condidat';
+import Recruteur from './pages/dossierR/Recruteur';
 
 
 

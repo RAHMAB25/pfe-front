@@ -14,7 +14,7 @@ export default function CONSidebarducondidat({ activeTab, setActiveTab, handleLo
        TABLEAU DE BORD 
       </button>
       <button
-        onClick={() => setActiveTab("LesOffrespourCondidat")}
+        onClick={() => setActiveTab("LesOffresC")}
         className={activeTab === "LesOffrespourCondidat" ? "active" : ""}
       >
         LES OFFRES

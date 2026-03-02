@@ -1,10 +1,10 @@
 import { useState } from "react";
 import "./Condidat.css";
-import CONSidebarducondidat from "./CONSidebarducondidat"; 
-import TabCondidat from "./TabCondidat";
-import LesOffrespourCondidat from "./LesOffrespourCondidat";
+import CONSidebarducondidat from "./CONSidebarducondidat.js"; 
+import TabCondidat from "./TabCondidat.js";
+import LesOffresC from "./LesOffresC.js";
 import MONProfil from "./MONProfil.js";
-import MesCandidatures from "./MesCandidatures";
+import MesCandidatures from "./MesCandidatures.js";
 import ASSISTANTIA from "./ASSISTANTIA";
 export default function Condidat() {
   const [activeTab, setActiveTab] = useState("TabCondidat");
@@ -28,7 +28,7 @@ export default function Condidat() {
       {/* Contenu droite */}
       <div className="candidat-content">
         {activeTab === "TabCondidat" && <TabCondidat />}
-{activeTab === "LesOffrespourCondidat" && <LesOffrespourCondidat />}
+{activeTab === "LesOffresC" && <LesOffresC/>}
 {activeTab === "MONProfil" && <MONProfil />}
 {activeTab === "MesCandidatures" && <MesCandidatures />}
 {activeTab === "ASSISTANTIA" && <ASSISTANTIA />}

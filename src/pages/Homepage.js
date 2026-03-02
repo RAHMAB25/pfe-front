@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 import jwtDecode from "jwt-decode";
 import "./Homepage.css";
-import "./Condidat";
-import "./Recruteur";
+import Condidat from './dossierC/Condidat';
+import Recruteur from './dossierR/Recruteur';
 
 const CardIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="card-icon">

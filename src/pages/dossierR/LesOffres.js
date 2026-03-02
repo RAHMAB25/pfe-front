@@ -22,45 +22,53 @@ const PostulerModal = ({ offreId, offreTitre, onClose, onSuccess }) => {
       }
     }
   };
+const handleSubmit = async (e) => {
+  e.preventDefault(); // ← Vérifiez que ceci est bien présent
+  
+  console.log("Fichier sélectionné:", cvFile); // Debug
+  
+  if (!cvFile) {
+    setError("CV obligatoire (PDF)");
+    return;
+  }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!cvFile) {
+  setLoading(true);
+  
+  // Créer le FormData
+  const formData = new FormData();
+  formData.append("cv", cvFile);
+  
+  // Debug : vérifier le contenu du FormData
+  for (let pair of formData.entries()) {
+    console.log(pair[0] + ': ' + pair[1]); // Devrait afficher "cv: [object File]"
+  }
 
-      setError("CV obligatoire (PDF)");
-      return;
+  try {
+    const res = await fetch(`http://localhost:3000/postuler/${offreId}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        // ⚠️ NE METTEZ PAS 'Content-Type' ici
+      },
+      body: formData,
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      onSuccess();
+      onClose();
+    } else {
+      setError(data.error || "Erreur lors de la candidature");
     }
-
-    setLoading(true);
-    const formData = new FormData();
-    formData.append("cv", cvFile); // Le nom "cv" doit correspondre à upload.single("cv")
-
-    try {
-      const res = await fetch(`http://localhost:3000/postuler/${offreId}`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          // NE PAS mettre Content-Type, le navigateur le définit automatiquement avec la boundary
-        },
-        body: formData,
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        onSuccess();
-        onClose();
-      } else {
-        setError(data.error || "Erreur lors de la candidature");
-      }
-    } catch (err) {
-      console.error("Erreur réseau:", err);
-      setError("Erreur de connexion au serveur");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  } catch (err) {
+    console.error("Erreur réseau:", err);
+    setError("Erreur de connexion au serveur");
+  } finally {
+    setLoading(false);
+  }
+};
+ 
   return (
     <div className="modal-overlay">
       <div className="modal-content">

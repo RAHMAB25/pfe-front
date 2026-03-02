@@ -1,6 +1,5 @@
 import React from "react";
 
-
 export default function RCSidebar({ activeTab, setActiveTab, handleLogout }) {
   return (
     <div className="recruteur-sidebar">
@@ -9,19 +8,19 @@ export default function RCSidebar({ activeTab, setActiveTab, handleLogout }) {
         onClick={() => setActiveTab("Tableau de bord")}
         className={activeTab === "Tableau de bord" ? "active" : ""}
       >
-       TABLEAU DE BORD 
+        TABLEAU DE BORD 
       </button>
       <button
-        onClick={() => setActiveTab("les offres")}
-        className={activeTab === "les offres" ? "active" : ""}
+        onClick={() => setActiveTab("Les offres")}  // CORRECTION: "L" majuscule
+        className={activeTab === "Les offres" ? "active" : ""}  // CORRECTION
       >
         LES OFFRES
       </button>
       <button
-        onClick={() => setActiveTab("Candidatenrecruteur")}
-        className={activeTab === "Candidatenrecruteur" ? "active" : ""}
+        onClick={() => setActiveTab("Candidats")}  // CORRECTION: nom plus naturel
+        className={activeTab === "Candidats" ? "active" : ""}  // CORRECTION
       >
-      LES CANDIDAT 
+        LES CANDIDATS 
       </button>
       <button
         onClick={() => setActiveTab("Analyse IA")}
@@ -34,6 +33,5 @@ export default function RCSidebar({ activeTab, setActiveTab, handleLogout }) {
         Déconnecter
       </button>
     </div>
-    
   );
 }
