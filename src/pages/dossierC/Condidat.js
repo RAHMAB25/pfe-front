@@ -5,7 +5,10 @@ import TabCondidat from "./TabCondidat.js";
 import LesOffresC from "./LesOffresC.js";
 import MONProfil from "./MONProfil.js";
 import MesCandidatures from "./MesCandidatures.js";
+import Notification from "./Notification.js";
 import ASSISTANTIA from "./ASSISTANTIA";
+import NotificationBell from "./NotificationBell";
+
 export default function Condidat() {
   const [activeTab, setActiveTab] = useState("TabCondidat");
 
@@ -24,13 +27,14 @@ export default function Condidat() {
         setActiveTab={setActiveTab} 
         handleLogout={handleLogout} 
       />
-
+ 
       {/* Contenu droite */}
       <div className="candidat-content">
         {activeTab === "TabCondidat" && <TabCondidat />}
 {activeTab === "LesOffresC" && <LesOffresC/>}
 {activeTab === "MONProfil" && <MONProfil />}
 {activeTab === "MesCandidatures" && <MesCandidatures />}
+{activeTab === "Notification" && <Notification />}
 {activeTab === "ASSISTANTIA" && <ASSISTANTIA />}
       </div>
     </div>

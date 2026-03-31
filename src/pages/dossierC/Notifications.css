@@ -1,0 +1,717 @@
+/* Notifications.css - Version couleurs claires et design doux */
+
+:root {
+  /* Palette de couleurs claires et douces */
+  --primary: #6c5ce7;
+  --primary-light: #a29bfe;
+  --primary-soft: #e5e1ff;
+  --success: #00b894;
+  --success-light: #d4f3e9;
+  --warning: #fdcb6e;
+  --warning-light: #fff3d6;
+  --danger: #ff7675;
+  --danger-light: #ffe3e3;
+  --info: #74b9ff;
+  --info-light: #d6eeff;
+  
+  /* Neutres doux */
+  --dark: #2d3436;
+  --medium: #636e72;
+  --light: #b2bec3;
+  --soft: #dfe6e9;
+  --bg-main: #f9f9f9;
+  --bg-card: #ffffff;
+  --bg-soft: #f1f3f5;
+  --bg-hover: #f5f7fa;
+  
+  /* Bordures et ombres */
+  --border: #e9ecef;
+  --border-soft: #f1f3f5;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.04);
+  --shadow-hover: 0 12px 28px rgba(108, 92, 231, 0.08);
+  
+  /* Rayons */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+  
+  /* Transitions */
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Container principal */
+.notifications-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+  min-height: calc(100vh - 4rem);
+  animation: fadeIn 0.4s ease;
+}
+
+/* En-tête doux */
+.notifications-header {
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem 2rem;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  box-shadow: var(--shadow-lg);
+  position: sticky;
+  top: 1rem;
+  z-index: 10;
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-title h1 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--dark);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.header-icon {
+  font-size: 2rem;
+  color: var(--primary);
+  filter: drop-shadow(0 2px 4px rgba(108, 92, 231, 0.2));
+}
+
+/* Badge doux */
+.non-lues-badge {
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.4rem 1.2rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--primary-light);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Actions */
+.header-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* Selecteur doux */
+.filter-select {
+  padding: 0.7rem 2.5rem 0.7rem 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: 0.9rem;
+  font-weight: 500;
+  background: white;
+  color: var(--medium);
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23636e72' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  transition: var(--transition);
+  min-width: 200px;
+  box-shadow: var(--shadow-sm);
+}
+
+.filter-select:hover {
+  border-color: var(--primary-light);
+  background-color: var(--bg-soft);
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+/* Bouton doux */
+.btn-mark-all {
+  background: white;
+  color: var(--medium);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  padding: 0.7rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-mark-all:hover {
+  background: var(--primary-soft);
+  color: var(--primary);
+  border-color: var(--primary-light);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Message d'erreur doux */
+.notifications-error {
+  background: var(--danger-light);
+  color: var(--danger);
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-lg);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid #ffd7d7;
+  box-shadow: var(--shadow-sm);
+  animation: slideDown 0.3s ease;
+}
+
+/* État vide amélioré */
+.notifications-empty {
+  text-align: center;
+  padding: 5rem 2rem;
+  background: var(--bg-card);
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-xl);
+  color: var(--medium);
+  box-shadow: var(--shadow-lg);
+}
+
+.empty-icon {
+  font-size: 5rem;
+  margin-bottom: 1.5rem;
+  animation: float 3s ease-in-out infinite;
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.05));
+  color: var(--light);
+}
+
+.notifications-empty h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--dark);
+  margin: 0 0 0.75rem 0;
+}
+
+.notifications-empty p {
+  font-size: 1rem;
+  color: var(--light);
+  margin: 0.25rem 0;
+  line-height: 1.6;
+}
+
+.empty-hint {
+  font-size: 0.9rem !important;
+  color: var(--medium) !important;
+  margin-top: 1.5rem !important;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-style: italic;
+}
+
+/* Liste des notifications */
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Item de notification doux */
+.notification-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  transition: var(--transition);
+  cursor: pointer;
+  display: flex;
+  gap: 1.25rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  animation: slideIn 0.3s ease;
+}
+
+.notification-item:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary-light);
+  box-shadow: var(--shadow-hover);
+  background: var(--bg-hover);
+}
+
+/* Notification non lue - version douce */
+.notification-item.non-lue {
+  background: var(--primary-soft);
+  border-left: 4px solid var(--primary);
+}
+
+/* Icône de notification */
+.notification-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  flex-shrink: 0;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+  background: white;
+}
+
+.notification-item:hover .notification-icon {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-md);
+}
+
+/* Contenu */
+.notification-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* En-tête */
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.notification-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.offre-titre {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--dark);
+}
+
+/* Badge Nouveau doux */
+.badge-nouveau {
+  background: var(--primary);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.25rem 0.8rem;
+  border-radius: var(--radius-full);
+  box-shadow: 0 2px 6px rgba(108, 92, 231, 0.2);
+}
+
+/* Date */
+.notification-time {
+  font-size: 0.8rem;
+  color: var(--light);
+  background: var(--bg-soft);
+  padding: 0.3rem 1rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+/* Message */
+.notification-message {
+  font-size: 0.95rem;
+  color: var(--medium);
+  margin: 0 0 1rem 0;
+  line-height: 1.6;
+  padding-right: 1rem;
+}
+
+/* Footer */
+.notification-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-soft);
+}
+
+/* Info recruteur doux */
+.recruteur-info {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--medium);
+  background: var(--bg-soft);
+  padding: 0.4rem 1.2rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+}
+
+.recruteur-icon {
+  font-size: 0.9rem;
+}
+
+/* Badge statut doux */
+.statut-badge {
+  padding: 0.4rem 1.2rem;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: var(--transition);
+  background: white;
+  border: 1px solid var(--border);
+}
+
+.statut-badge:hover {
+  transform: scale(1.02);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Loading */
+.notifications-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 1.5rem;
+  color: var(--light);
+}
+
+.spinner {
+  width: 44px;
+  height: 44px;
+  border: 3px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* Bouton de test (à ajouter temporairement) */
+.test-button {
+  background: var(--primary-soft);
+  color: var(--primary);
+  border: 1px solid var(--primary-light);
+  border-radius: var(--radius-full);
+  padding: 0.8rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  box-shadow: var(--shadow-sm);
+}
+
+.test-button:hover:not(:disabled) {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-hover);
+}
+
+.test-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .notifications-container {
+    padding: 0 1rem;
+    margin: 1rem auto;
+  }
+
+  .notifications-header {
+    padding: 1rem;
+    flex-direction: column;
+  }
+
+  .header-title h1 {
+    font-size: 1.5rem;
+  }
+
+  .header-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .filter-select,
+  .btn-mark-all {
+    width: 100%;
+  }
+
+  .notification-item {
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  .notification-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 1.4rem;
+  }
+
+  .notification-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .recruteur-info,
+  .statut-badge {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Toast Notification Styles */
+.notification-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  padding: 16px 20px;
+  min-width: 320px;
+  max-width: 400px;
+  display: flex;
+  gap: 12px;
+  z-index: 10000;
+  animation: slideInRight 0.3s ease-out;
+  border-left: 4px solid #3b82f6;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.notification-toast:hover {
+  transform: translateX(-4px);
+}
+
+.toast-icon {
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.toast-content {
+  flex: 1;
+}
+
+.toast-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: #1f2937;
+}
+
+.toast-message {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.toast-offre {
+  font-size: 12px;
+  color: #3b82f6;
+  font-weight: 500;
+  margin-top: 6px;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #9ca3af;
+  padding: 4px;
+  height: 24px;
+  transition: color 0.2s;
+}
+
+.toast-close:hover {
+  color: #ef4444;
+}
+
+.toast-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  width: 100%;
+  animation: shrink 5s linear forwards;
+  border-radius: 0 0 12px 12px;
+}
+
+@keyframes shrink {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Animation pour le badge */
+.pulse {
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.pulse-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: #ef4444;
+  border-radius: 50%;
+  margin-right: 6px;
+  animation: pulseDot 1s ease-in-out infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
+}
+
+/* Animation d'entrée pour les notifications */
+.slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Style pour différentes couleurs de toast */
+.toast-info {
+  border-left-color: #3b82f6;
+}
+
+.toast-success {
+  border-left-color: #10b981;
+}
+
+.toast-warning {
+  border-left-color: #f59e0b;
+}
+
+.toast-error {
+  border-left-color: #ef4444;
+}

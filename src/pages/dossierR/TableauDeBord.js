@@ -1,18 +1,17 @@
-
-
 import { useEffect, useState } from "react";
 import jwtDecode from "jwt-decode";
+import "./TableauB.css";
 
-//import "./TableauDeBord.css";
 export default function TableauDeBord() {
   const [offres, setOffres] = useState([]);
- 
+  const [loading, setLoading] = useState(true);
 
   const token = localStorage.getItem("token");
   const decoded = token ? jwtDecode(token) : null;
 
   useEffect(() => {
     const fetchOffres = async () => {
+      setLoading(true);
       try {
         const res = await fetch("http://localhost:3000/mesoffres", {
           headers: {
@@ -24,6 +23,8 @@ export default function TableauDeBord() {
         setOffres(data);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -31,6 +32,15 @@ export default function TableauDeBord() {
       fetchOffres();
     }
   }, [token]);
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('fr-FR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };
 
   return (
     <div className="dashboard-container">
@@ -40,8 +50,6 @@ export default function TableauDeBord() {
           <h1>Tableau de bord</h1>
           <p>Bienvenue 👋</p>
         </div>
-
-      
       </div>
 
       {/* Stats */}
@@ -65,13 +73,19 @@ export default function TableauDeBord() {
       <div className="recent-offres">
         <h2>Mes dernières offres</h2>
 
-        {offres.length === 0 ? (
-          <p>Aucune offre publiée</p>
+        {loading ? (
+          <div className="loading-state">
+            <div className="loading-spinner"></div>
+            <p>Chargement...</p>
+          </div>
+        ) : offres.length === 0 ? (
+          <p className="empty-message">Aucune offre publiée</p>
         ) : (
           offres.slice(0, 5).map((offre, index) => (
-            <div key={index} className="offre-item">
+            <div key={offre.id || index} className="offre-item">
               <h4>{offre.titre}</h4>
-              <p>{offre.description}</p>
+              <p className="offre-date">Publiée le {formatDate(offre.date_publication)}</p>
+              <p className="offre-description">{offre.description}</p>
             </div>
           ))
         )}

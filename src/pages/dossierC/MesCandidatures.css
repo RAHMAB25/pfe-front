@@ -1,74 +1,1362 @@
-.mes-candidatures-container {
-  padding-bottom: 50px;
+/* ===== VARIABLES ===== */
+:root {
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  
+  --yellow-badge: #e4cf98;
+  --green-badge: #beddd3;
+  --red-badge: #e1c2c2;
+  
+  --sidebar-bg: #2d3748;
+  --sidebar-bg-hover: #1a202c;
+  --sidebar-border: #4a5568;
+  
+  --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.15);
+  
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 50px;
 }
 
-.page-title {
-  color: #2c3e50;
-  font-weight: 600;
+/* ===== CONTAINER PRINCIPAL ===== */
+.mes-candidatures-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
+  padding: 2rem !important;
+  border-radius: var(--radius-xl);
+}
+
+/* ===== TITRES ===== */
+.page-title-modern {
+  color: white !important;
+  font-weight: 700;
   margin: 0;
 }
 
-.total-badge {
-  font-size: 1rem;
-  padding: 8px 15px;
+.page-title-modern .text-primary {
+  color: white !important;
+  opacity: 0.9;
 }
 
-.stat-card {
+.h1 {
+  color: #3b414d;
+}
+
+/* ===== BADGE TOTAL ===== */
+.total-badge-modern {
+  background: linear-gradient(135deg, var(--gray-800) 0%, var(--gray-700) 100%);
   border: none;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  transition: transform 0.2s;
+  border-radius: var(--radius-xl);
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
 }
 
-.stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+/* ===== CARTES DE STATISTIQUES ===== */
+.stat-card-modern {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.3s ease;
+  border: none !important;
 }
 
-.stat-icon {
+.stat-card-modern:hover {
+  transform: translateY(-5px);
+}
+
+.stat-card-modern .card-body {
+  padding: 0;
+}
+
+.stat-card-modern h6 {
+  color: var(--gray-500);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-card-modern h2 {
+  color: var(--gray-800);
   font-size: 2rem;
-  opacity: 0.7;
+  font-weight: 700;
+  margin: 0.5rem 0;
 }
 
-.candidature-card {
-  border: none;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.stat-card-modern small {
+  color: var(--gray-400);
+  font-size: 0.8rem;
+}
+
+/* ===== SECTION DES FILTRES ===== */
+.filters-section {
+  background: white;
+  padding: 2rem;
+  margin-bottom: 3rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+}
+
+.filter-btn {
+  border-radius: 30px;
+  padding: 0.5rem 1.5rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.filter-btn.btn-primary {
+  background: var(--gray-600);
+  border-color: #2f354f;
+}
+
+/* ===== CARTES DE CANDIDATURE ===== */
+.candidature-card-modern {
+  background: white;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+  border: 1px solid var(--gray-200) !important;
+  margin-bottom: 1rem;
+}
+
+.candidature-card-modern .card-body {
+  position: relative;
+  padding: 1rem !important;  /* Réduit de 1.5rem à 1rem */
+  min-height: 140px;  /* Réduit de 180px à 140px */
+  display: flex;
+  flex-direction: column;
+}
+
+.candidature-card-modern .card-title {
+  color: var(--gray-800);
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+/* ===== BARRE LATÉRALE GRISE ===== */
+.candidature-details-sidebar {
+  width: 140px;
+  background: var(--sidebar-bg);
+  border-radius: var(--radius-md);
+  padding: 1rem 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--sidebar-border);
   transition: all 0.3s ease;
 }
 
-.candidature-card:hover {
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+.candidature-card-modern:hover .candidature-details-sidebar {
+  background: var(--sidebar-bg-hover);
+  transform: translateX(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
-.status-badge {
+.candidature-content-wrapper {
+  display: flex;
+  gap: 1rem;
+  flex: 1;
+  margin-top: 25px;
+}
+
+.candidature-main-info {
+  flex: 1;
+}
+
+/* Éléments de la barre latérale */
+.detail-sidebar-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.detail-sidebar-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--gray-400);
+  font-weight: 600;
+}
+
+.detail-sidebar-value {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #e2e8f0;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.detail-sidebar-value svg {
+  font-size: 0.8rem;
+  color: var(--gray-400);
+  flex-shrink: 0;
+}
+
+.detail-sidebar-divider {
+  height: 1px;
+  background: var(--sidebar-border);
+  margin: 0.3rem 0;
+}
+
+/* Lien CV dans la barre latérale */
+.detail-cv-link {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #e2e8f0;
+  text-decoration: none;
+  font-size: 0.7rem;
+  padding: 0.2rem 0;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  max-width: 100%;
+}
+
+.detail-cv-link:hover {
+  color: white;
+  transform: translateX(2px);
+}
+
+.detail-cv-link svg {
+  color: #fc8181;
+  font-size: 0.75rem;
+}
+
+.detail-cv-link span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 80px;
+}
+
+/* ===== BOUTONS ===== */
+/* Styles communs pour tous les boutons */
+.btn-eye-top-right,
+.btn-download-dark,
+.btn-details-dark {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-eye-top-right::before,
+.btn-download-dark::before,
+.btn-details-dark::before {
+  content: '';
+  position: absolute;
+  transition: all 0.6s ease;
+  z-index: -1;
+}
+
+.btn-eye-top-right:hover,
+.btn-download-dark:hover,
+.btn-details-dark:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(26, 32, 44, 0.3);
+}
+
+/* Bouton œil en haut à droite */
+.btn-eye-top-right {
+  position: absolute !important;
+  top: 15px;
+  right: 15px;
+  background: var(--sidebar-bg) !important;
+  border: none !important;
+  color: white !important;
+  width: 28px !important;
+  height: 28px !important;
+  padding: 0 !important;
+  border-radius: 8px !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.btn-eye-top-right::before {
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+}
+
+.btn-eye-top-right:hover {
+  background: var(--sidebar-bg-hover) !important;
+}
+
+.btn-eye-top-right:hover::before {
+  left: 100%;
+}
+
+.btn-eye-top-right svg {
+  font-size: 0.9rem;
+  transition: transform 0.2s ease;
+}
+
+.btn-eye-top-right:hover svg {
+  transform: scale(1.1);
+}
+
+/* Tooltip pour le bouton œil */
+.btn-eye-top-right::after {
+  content: attr(title);
+  position: absolute;
+  top: 100%;
+  right: 0;
+  transform: translateY(5px);
+  background: var(--sidebar-bg-hover);
+  color: white;
+  font-size: 0.65rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  pointer-events: none;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--sidebar-border);
+}
+
+.btn-eye-top-right:hover::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(10px);
+}
+
+/* Bouton de téléchargement */
+.btn-download-dark {
+  width: 36px !important;
+  height: 36px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  background: var(--gray-700) !important;
+  border: none !important;
+  color: white !important;
+  border-radius: 10px !important;
+}
+
+.btn-download-dark::before {
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+}
+
+.btn-download-dark:hover {
+  background: var(--gray-800) !important;
+  transform: translateY(-2px) rotate(360deg);
+}
+
+.btn-download-dark:hover::before {
+  width: 80px;
+  height: 80px;
+}
+
+.btn-download-dark svg {
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.btn-download-dark:hover svg {
+  transform: scale(1.1);
+}
+
+/* Tooltip pour le bouton de téléchargement */
+.btn-download-dark::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);
+  background: var(--sidebar-bg-hover);
+  color: white;
+  font-size: 0.7rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 100;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--sidebar-border);
+}
+
+.btn-download-dark:hover::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-15px);
+}
+
+/* Bouton Détails (ancien, peut être supprimé si non utilisé) */
+.btn-details-dark {
+  background: var(--sidebar-bg) !important;
+  border: none !important;
+  color: white !important;
+  padding: 0.7rem 1rem !important;
+  border-radius: var(--radius-sm) !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  letter-spacing: 0.3px;
+  min-width: 100px;
+  flex-grow: 0 !important;
+}
+
+.btn-details-dark::before {
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+}
+
+.btn-details-dark:hover {
+  background: var(--sidebar-bg-hover) !important;
+  transform: translateY(-3px);
+}
+
+.btn-details-dark:hover::before {
+  left: 100%;
+}
+
+.btn-details-dark svg {
+  font-size: 1.1rem;
+  transition: transform 0.3s ease;
+}
+
+.btn-details-dark:hover svg {
+  transform: translateX(-3px);
+}
+
+/* Conteneur pour le bouton de téléchargement */
+.download-button-container {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  z-index: 10;
+}
+
+/* Alignement des boutons */
+.d-flex.gap-2.mt-3 {
+  justify-content: flex-end;
+}
+
+/* ===== BADGES DE STATUT ===== */
+/* Badge moderne (original) */
+.status-badge-modern {
   font-size: 0.85rem;
-  padding: 6px 12px;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-xl);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  background: white !important;
+  border: 2px solid;
+}
+
+.status-badge-modern[style*="border-left: 4px solid #e4cf98"] {
+  border-color: var(--yellow-badge) !important;
+  color: #92400e !important;
+}
+
+.status-badge-modern[style*="border-left: 4px solid #beddd3"] {
+  border-color: var(--green-badge) !important;
+  color: #065f46 !important;
+}
+
+.status-badge-modern[style*="border-left: 4px solid #e1c2c2"] {
+  border-color: var(--red-badge) !important;
+  color: #991b1b !important;
+}
+
+/* Badge de statut en haut à droite */
+.status-badge-top-right {
+  position: absolute;
+  top: 15px;
+  right: 60px;
+  font-size: 0.6rem;
+  padding: 0.2rem 0.7rem;
+  border-radius: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.status-badge-top-right.en-attente {
+  background: var(--yellow-badge) !important;
+  color: var(--gray-800) !important;
+  border: 1px solid #d4b978;
+}
+
+.status-badge-top-right.acceptee {
+  background: var(--green-badge) !important;
+  color: var(--gray-800) !important;
+  border: 1px solid #9ec0b3;
+}
+
+.status-badge-top-right.refusee {
+  background: var(--red-badge) !important;
+  color: var(--gray-800) !important;
+  border: 1px solid #c9a0a0;
+}
+
+.status-badge-top-right svg {
+  color: inherit;
+}
+
+/* Badge de détail (pour la barre latérale) */
+.detail-status-badge {
+  font-size: 0.7rem;
+  padding: 0.3rem 0.6rem;
   border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  width: fit-content;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.detail-status-badge.en-attente {
+  background: var(--yellow-badge) !important;
+  color: var(--gray-800) !important;
+}
+
+.detail-status-badge.acceptee {
+  background: var(--green-badge) !important;
+  color: var(--gray-800) !important;
+}
+
+.detail-status-badge.refusee {
+  background: var(--red-badge) !important;
+  color: var(--gray-800) !important;
+}
+
+/* ===== MÉTADONNÉES ===== */
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--gray-600);
+  font-size: 0.9rem;
+  padding: 0.25rem 0;
+}
+
+.meta-item:not(:last-child) {
+  margin-bottom: 0.5rem;
+}
+
+.meta-icon {
+  color: var(--gray-500);
+  font-size: 0.9rem;
+  width: 10px;
+}
+
+/* ===== MODAL ===== */
+.details-modal-modern .modal-content {
+  border-radius: var(--radius-lg);
+  border: none;
+  box-shadow: var(--shadow-lg);
+}
+
+.details-modal-modern .modal-header {
+  background: linear-gradient(135deg, #494e53 0%, #494e53 100%);
+  color: white;
+  border-radius: 30px 20px 0 0;
+  padding: 1.5rem;
+}
+
+.details-modal-modern .modal-header .btn-close {
+  filter: brightness(0) invert(1);
+}
+
+.details-modal-modern .modal-title {
+  font-weight: 600;
+}
+
+.details-modal-modern .modal-body {
+  padding: 2rem;
+}
+
+/* Table dans la modal */
+.details-table-modern {
+  background: var(--gray-50);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.details-table-modern td {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--gray-200);
+  color: var(--gray-800);
+}
+
+.details-table-modern tr:last-child td {
+  border-bottom: none;
+}
+
+.details-table-modern td:first-child {
+  font-weight: 500;
+  color: var(--gray-500);
+  width: 150px;
+}
+
+/* ===== ÉTAT VIDE ===== */
+.empty-state-modern {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 4rem 2rem;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--gray-200) !important;
+}
+
+.empty-icon-wrapper {
+  background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 2rem;
+}
+
+/* ===== PROGRESS BAR ===== */
+.progress {
+  background-color: var(--gray-100);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, #bbc1dc 0%, #bbc1dc 100%);
+  border-radius: 10px;
+}
+
+/* ===== LOADING SPINNER ===== */
+.loading-spinner-modern {
+  display: inline-block;
+  padding: 2rem;
+  background: white;
+  border-radius: 50%;
+  box-shadow: var(--shadow-md);
+}
+
+.spinner-border {
+  color: #242839 !important;
+}
+
+/* ===== ALERTES ===== */
+.error-alert {
+  background: #fff5f5;
+  border: 1px solid #feb2b2;
+  color: #c53030;
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+}
+
+/* ===== PERSONNALISATION DES COULEURS D'ICÔNES ===== */
+.text-primary {
+  color: #414450 !important;
+}
+
+.text-success {
+  color: #48bb78 !important;
+}
+
+.text-warning {
+  color: var(--yellow-badge) !important;
+}
+
+.text-danger {
+  color: #f56565 !important;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes darkPulse {
+  0% { box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); }
+  50% { box-shadow: 0 8px 20px rgba(45, 55, 72, 0.3); }
+  100% { box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); }
+}
+
+@keyframes buttonSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.col-lg-6 {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.btn-details-dark,
+.btn-download-dark {
+  animation: buttonSlideIn 0.4s ease forwards;
+}
+
+.btn-details-dark {
+  animation: darkPulse 3s infinite;
+}
+
+.btn-download-dark {
+  animation-delay: 0.1s;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .mes-candidatures-container {
+    padding: 1rem !important;
+  }
+  
+  .stat-card-modern {
+    margin-bottom: 1rem;
+  }
+  
+  .stat-card-modern h2 {
+    font-size: 1.5rem;
+  }
+  
+  .filters-section {
+    padding: 0.75rem;
+  }
+  
+  .filter-btn {
+    padding: 0.4rem 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .candidature-card-modern .card-body {
+    padding: 1rem;
+  }
+  
+  .candidature-content-wrapper {
+    flex-direction: column;
+    margin-top: 35px;
+  }
+  
+  .candidature-details-sidebar {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 0.8rem;
+  }
+  
+  .detail-sidebar-item {
+    flex: 1;
+    min-width: 120px;
+  }
+  
+  .detail-sidebar-divider {
+    width: 1px;
+    height: auto;
+    margin: 0 0.5rem;
+  }
+  
+  .btn-eye-top-right {
+    top: 10px;
+    right: 10px;
+    width: 32px !important;
+    height: 32px !important;
+  }
+  
+  .status-badge-top-right {
+    top: 10px;
+    right: 50px;
+    font-size: 0.65rem;
+    padding: 0.3rem 0.8rem;
+  }
+  
+  .download-button-container {
+    bottom: 10px;
+    right: 10px;
+  }
+  
+  .btn-download-dark {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  
+  .d-flex.gap-2.mt-3 {
+    justify-content: stretch;
+  }
+  
+  .btn-details-dark {
+    min-width: auto;
+    flex-grow: 1 !important;
+    padding: 0.6rem 0.8rem !important;
+    font-size: 0.85rem !important;
+  }
+  
+  .btn-download-dark svg {
+    font-size: 1rem;
+  }
+  
+  .empty-state-modern {
+    padding: 2rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .candidature-details-sidebar {
+    flex-direction: column;
+  }
+  
+  .detail-sidebar-item {
+    width: 100%;
+  }
+  
+  .detail-sidebar-divider {
+    width: 100%;
+    height: 1px;
+    margin: 0.5rem 0;
+  }
+}
+
+/* ===== UTILITAIRES ===== */
+.btn-outline-secondary {
+  border-color: var(--gray-200);
+  color: var(--gray-600);
+}
+
+.btn-outline-secondary:hover {
+  background: var(--gray-100);
+  border-color: var(--gray-300);
+  color: var(--gray-800);
+}
+
+.btn-details-dark:focus,
+.btn-download-dark:focus,
+.btn-eye-top-right:focus {
+  outline: 2px solid var(--sidebar-border);
+  outline-offset: 2px;
+}
+
+.btn-details-dark:disabled,
+.btn-download-dark:disabled,
+.btn-eye-top-right:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  animation: none !important;
+  box-shadow: none !important;
+}
+
+/* ===== RÉORGANISATION DES DONNÉES DANS LA CARTE ===== */
+
+/* Structure principale */
+.candidature-card-modern .card-body {
+  position: relative;
+  padding: 1.5rem !important;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* En-tête avec titre et entreprise */
+.candidature-header-compact {
+  margin-bottom: 0.5rem;  /* Réduit de 1rem à 0.5rem */
+  padding-right: 85px;  /* Réduit pour les badges */
+}
+
+
+.candidature-title-compact {
+  font-size: 1rem;  /* Réduit de 1.2rem à 1rem */
+  font-weight: 700;
+  color: var(--gray-800);
+  margin: 0 0 0.1rem 0;  /* Réduit */
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90%;
+}
+
+.candidature-company-compact {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--gray-600);
+  font-size: 0.75rem;
+}
+
+.candidature-company-compact svg {
+  color: var(--gray-500);
+  font-size: 0.7rem;
+}
+
+/* Section date uniquement */
+.candidature-date-section {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;  /* Réduit */
+  background: var(--gray-50);
+  border-radius: 10px;  /* Réduit */
+  padding: 0.4rem 0.6rem;  /* Réduit de 0.8rem 1rem à 0.4rem 0.6rem */
+  margin: 0.2rem 0 0.4rem 0;  /* Réduit */
+  border: 1px solid var(--gray-200);
+  width: fit-content;
+  min-width: 160px;  /* Réduit de 200px à 160px */
+}
+
+.date-icon {
+  width: 24px;  /* Réduit de 32px à 24px */
+  height: 24px;  /* Réduit de 32px à 24px */
+  background: white;
+  border-radius: 8px;  /* Réduit */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--gray-200);
+}
+.date-icon svg {
+  font-size: 0.8rem;  /* Réduit de 1rem à 0.8rem */
+  color: var(--gray-600);
+}
+
+.date-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.date-label {
+  font-size: 0.55rem;  /* Réduit de 0.65rem à 0.55rem */
+  text-transform: uppercase;
+  letter-spacing: 0.3px;  /* Réduit */
+  color: var(--gray-500);
+  font-weight: 600;
+}
+.date-value {
+  font-size: 0.75rem;  /* Réduit de 0.95rem à 0.75rem */
+  font-weight: 500;
+  color: var(--gray-800);
+  white-space: nowrap;
+}
+
+/* Section CV */
+.cv-section {
+  margin: 0.2rem 0 0.4rem 0;  /* Réduit */
+}
+.cv-file-display {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;  /* Réduit */
+  background: var(--gray-50);
+  padding: 0.3rem 0.6rem;  /* Réduit de 0.5rem 1rem à 0.3rem 0.6rem */
+  border-radius: 10px;  /* Réduit */
+  border: 1px solid var(--gray-200);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: fit-content;
+  min-width: 160px;  /* Réduit de 200px à 160px */
+}
+.cv-file-display:hover {
+  background: white;
+  border-color: var(--gray-400);
+  box-shadow: var(--shadow-sm);
+}
+
+.cv-icon {
+  width: 24px;  /* Réduit de 32px à 24px */
+  height: 24px;  /* Réduit de 32px à 24px */
+  background: #fff5f5;
+  border-radius: 8px;  /* Réduit */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #fed7d7;
+}
+
+.cv-icon svg {
+  font-size: 0.8rem;
+}
+
+.cv-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.cv-label {
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--gray-500);
+  font-weight: 600;
+}
+
+.cv-filename {
+  font-size: 0.7rem;  /* Réduit de 0.85rem à 0.7rem */
+  color: var(--gray-700);
+  max-width: 120px;  /* Réduit de 150px à 120px */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Pied de carte avec actions */
+.candidature-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 0.3rem;
+  border-top: 1px dashed var(--gray-200);
+}
+
+/* Bouton d'action téléchargement */
+.btn-download-simple {
+  background: transparent !important;
+  border: 1px solid var(--gray-300) !important;
+  color: var(--gray-600) !important;
+  font-size: 0.7rem !important;  /* Réduit de 0.8rem à 0.7rem */
+  padding: 0.2rem 0.8rem !important;  /* Réduit */
+  border-radius: 20px !important;  /* Réduit */
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.3rem;  /* Réduit */
+}
+.btn-download-simple:hover {
+  background: var(--gray-100) !important;
+  border-color: var(--gray-500) !important;
+  color: var(--gray-800) !important;
+  transform: translateY(-1px);
+}
+
+.btn-download-simple svg {
+  font-size: 0.7rem;
+}
+
+/* Position des éléments absolus */
+.btn-eye-position {
+  position: absolute;
+  top: 10px;  /* Réduit de 15px à 10px */
+  right: 10px;  /* Réduit de 15px à 10px */
+  z-index: 10;
+}
+.status-badge-position {
+  position: absolute;
+  top: 10px;
+  right: 45px;
+  z-index: 10;
+}
+
+/* Version compacte pour mobile */
+@media (max-width: 768px) {
+  .candidature-header-compact {
+    padding-right: 80px;
+  }
+  
+  .candidature-title-compact {
+    font-size: 1.1rem;
+  }
+  
+  .candidature-date-section,
+  .cv-file-display {
+    width: 100%;
+    min-width: auto;
+  }
+  
+  .btn-eye-position {
+    top: 12px;
+    right: 12px;
+    width: 32px !important;
+    height: 32px !important;
+  }
+  
+  .status-badge-position {
+    top: 12px;
+    right: 50px;
+    font-size: 0.65rem;
+    padding: 0.25rem 0.8rem;
+  }
+}
+
+/* Animation d'apparition */
+@keyframes slideInData {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.candidature-date-section,
+.cv-file-display {
+  animation: slideInData 0.4s ease forwards;
+}
+
+.candidatures-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+  margin-top: 25px;
+}
+
+.candidature-card {
+  background: white;
+  border-radius: 18px;
+  padding: 22px;
+  min-height: 140px; /* hauteur identique */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+/* ===== STYLE SIMPLE POUR LES CADRES DE CANDIDATURE ===== */
+.candidatures-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.candidature-item {
+  background: white;
+  border: 1px solid #edf2f7;
+  border-radius: 12px;
+  padding: 16px 20px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.candidature-item:hover {
+  border-color: #cbd5e0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* En-tête avec titre et œil */
+.candidature-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.candidature-item-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #2d3748;
+}
+
+.candidature-item-eye {
+  color: #a0aec0 !important;
+  padding: 4px 8px !important;
+  font-size: 1rem !important;
+  text-decoration: none !important;
+  transition: color 0.2s ease;
+}
+
+.candidature-item-eye:hover {
+  color: #4a5568 !important;
+  background: transparent !important;
+}
+
+/* Entreprise */
+.candidature-item-company {
+  color: #718096;
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.candidature-item-company::before {
+  content: "🏢";
+  margin-right: 6px;
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+/* Ligne statut et date */
+.candidature-item-details {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed #edf2f7;
+}
+
+.candidature-item-status {
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 30px;
   display: inline-flex;
   align-items: center;
 }
 
-.candidature-details p {
-  color: #555;
-  font-size: 0.95rem;
+.status-en-attente {
+  background: #fef3e2;
+  color: #9c7c3b;
 }
 
-.details-table {
-  width: 100%;
+.status-acceptee {
+  background: #e3f7e3;
+  color: #2e6b2e;
 }
 
-.details-table td {
-  padding: 10px;
-  border-bottom: 1px solid #eee;
+.status-refusee {
+  background: #fee9e9;
+  color: #aa3e3e;
 }
 
-.details-table tr:last-child td {
+.candidature-item-date {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+}
+
+.candidature-item-date::before {
+  content: "📅";
+  margin-right: 5px;
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+
+/* Lien CV */
+.candidature-item-cv {
+  font-size: 0.85rem;
+}
+
+.candidature-item-cv .cv-link {
+  color: #64748b !important;
+  text-decoration: none !important;
+  padding: 4px 0 !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  transition: color 0.2s ease;
+}
+
+.candidature-item-cv .cv-link:hover {
+  color: #2563eb !important;
+}
+
+.candidature-item-cv .cv-link svg {
+  color: #dc2626;
+  font-size: 0.9rem;
+}
+
+/* Version plus minimaliste (alternative) */
+.candidature-item-minimal {
+  background: white;
+  border-bottom: 1px solid #f1f5f9;
+  padding: 16px 0;
+}
+
+.candidature-item-minimal:last-child {
   border-bottom: none;
 }
 
-@media (max-width: 768px) {
-  .stat-card {
-    margin-bottom: 15px;
+/* Style pour le bouton œil uniquement au survol */
+.candidature-item:not(:hover) .candidature-item-eye {
+  opacity: 0.3;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .candidature-item {
+    padding: 14px 16px;
   }
+  
+  .candidature-item-title {
+    font-size: 1rem;
+  }
+  
+  .candidature-item-details {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
+.candidatures-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+  margin-top: 25px;
+}
+@media (max-width: 768px) {
+  .candidatures-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.candidature-header-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.candidature-item-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.candidature-item-status{
+  font-size:0.75rem;
+  padding:4px 10px;
+  border-radius:20px;
+  font-weight:500;
 }

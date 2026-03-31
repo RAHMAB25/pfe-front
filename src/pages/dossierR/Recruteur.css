@@ -7,7 +7,7 @@
 /* Sidebar */
 .recruteur-sidebar {
   width: 250px;
-  background-color: #68716f;
+  background-color: #374151;
   color: white;
   padding: 30px 20px;
   display: flex;
@@ -35,12 +35,12 @@
 }
 
 .recruteur-sidebar button:hover {
-  background-color: #223c37;
+  background-color: #6B7280;
 }
 
 .recruteur-sidebar button.active {
-  background-color: #929b9a;
-  color: #1a302a;
+  background-color: #F3F4F6;
+  color: #6B7280;
 }
 
 .btn-logout {
