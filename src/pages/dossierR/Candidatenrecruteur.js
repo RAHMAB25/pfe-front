@@ -36,7 +36,16 @@ const Candidatenrecruteur = () => {
     fetchCandidatures();
   }, [fetchCandidatures]);
 
+  // Fonction corrigée pour changer le statut
   const changerStatut = async (candidatureId, nouveauStatut) => {
+    // Convertir le statut affiché en valeur backend
+    const statutBackend = {
+      'EN ATTENTE': 'EN_ATTENTE',
+      'EN COURS': 'EN_COURS',
+      'ACCEPTÉE': 'ACCEPTE',
+      'REFUSÉE': 'REFUSE'
+    }[nouveauStatut] || nouveauStatut;
+
     try {
       const response = await fetch(`http://localhost:3000/recruteur/candidatures/${candidatureId}/statut`, {
         method: 'PUT',
@@ -44,11 +53,15 @@ const Candidatenrecruteur = () => {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ statut: nouveauStatut })
+        body: JSON.stringify({ statut: statutBackend })
       });
 
-      if (!response.ok) throw new Error('Erreur mise à jour');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Erreur mise à jour');
+      }
 
+      // Mettre à jour l'état local avec le nouveau statut (garder le format d'affichage)
       setCandidatures(prevCandidatures => 
         prevCandidatures.map(c => 
           c.candidature_id === candidatureId 
@@ -62,6 +75,7 @@ const Candidatenrecruteur = () => {
       }
 
     } catch (err) {
+      console.error('Erreur:', err);
       alert('Erreur: ' + err.message);
     }
   };
@@ -181,21 +195,11 @@ const Candidatenrecruteur = () => {
 
   const getStatutPastelColor = (statut) => {
     switch(statut) {
-      case 'EN ATTENTE': return '#fef3e2'; // pastel orange clair
-      case 'EN COURS': return '#e2f0fa';   // pastel bleu clair
-      case 'ACCEPTÉE': return '#e2f3e2';   // pastel vert clair
-      case 'REFUSÉE': return '#fee2e2';    // pastel rouge clair
-      default: return '#f5f5f5';
-    }
-  };
-
-  const getOptionPastelColor = (statut) => {
-    switch(statut) {
       case 'EN ATTENTE': return '#fef3e2';
       case 'EN COURS': return '#e2f0fa';
       case 'ACCEPTÉE': return '#e2f3e2';
       case 'REFUSÉE': return '#fee2e2';
-      default: return '#ffffff';
+      default: return '#f5f5f5';
     }
   };
 
@@ -290,50 +294,30 @@ const Candidatenrecruteur = () => {
           <button 
             className={`filter-btn ${filter === 'tous' ? 'active' : ''}`}
             onClick={() => setFilter('tous')}
-            style={{
-              backgroundColor: filter === 'tous' ? '#e8e8e8' : 'white',
-              borderColor: '#dddddd'
-            }}
           >
             Tous
           </button>
           <button 
             className={`filter-btn ${filter === 'EN ATTENTE' ? 'active' : ''}`}
             onClick={() => setFilter('EN ATTENTE')}
-            style={{
-              backgroundColor: filter === 'EN ATTENTE' ? '#fef3e2' : 'white',
-              borderColor: '#dddddd'
-            }}
           >
             ⏳ En attente
           </button>
           <button 
             className={`filter-btn ${filter === 'EN COURS' ? 'active' : ''}`}
             onClick={() => setFilter('EN COURS')}
-            style={{
-              backgroundColor: filter === 'EN COURS' ? '#e2f0fa' : 'white',
-              borderColor: '#dddddd'
-            }}
           >
             🔄 En cours
           </button>
           <button 
             className={`filter-btn ${filter === 'ACCEPTÉE' ? 'active' : ''}`}
             onClick={() => setFilter('ACCEPTÉE')}
-            style={{
-              backgroundColor: filter === 'ACCEPTÉE' ? '#e2f3e2' : 'white',
-              borderColor: '#dddddd'
-            }}
           >
             ✅ Acceptées
           </button>
           <button 
             className={`filter-btn ${filter === 'REFUSÉE' ? 'active' : ''}`}
             onClick={() => setFilter('REFUSÉE')}
-            style={{
-              backgroundColor: filter === 'REFUSÉE' ? '#fee2e2' : 'white',
-              borderColor: '#dddddd'
-            }}
           >
             ❌ Refusées
           </button>
@@ -424,48 +408,21 @@ const Candidatenrecruteur = () => {
                         onChange={(e) => changerStatut(c.candidature_id, e.target.value)}
                         className="statut-pastel-select"
                         style={{
-                          backgroundColor: getStatutPastelColor(c.statut),
-                          borderColor: '#dddddd'
+                          backgroundColor: getStatutPastelColor(c.statut)
                         }}
                       >
-                        {/* Option cachée pour le statut actuel */}
-                        <option value={c.statut} disabled style={{ display: 'none' }}>
-                          {getStatutIcon(c.statut)} {getStatutLibelle(c.statut)}
+                        <option value="EN ATTENTE" style={{ backgroundColor: '#fef3e2' }}>
+                          ⏳ En attente
                         </option>
-                        
-                        {/* Options avec couleurs pastel */}
-                        {c.statut !== 'EN ATTENTE' && (
-                          <option 
-                            value="EN ATTENTE"
-                            style={{ backgroundColor: '#fef3e2' }}
-                          >
-                            ⏳ En attente
-                          </option>
-                        )}
-                        {c.statut !== 'EN COURS' && (
-                          <option 
-                            value="EN COURS"
-                            style={{ backgroundColor: '#e2f0fa' }}
-                          >
-                            🔄 En cours
-                          </option>
-                        )}
-                        {c.statut !== 'ACCEPTÉE' && (
-                          <option 
-                            value="ACCEPTÉE"
-                            style={{ backgroundColor: '#e2f3e2' }}
-                          >
-                            ✅ Accepter
-                          </option>
-                        )}
-                        {c.statut !== 'REFUSÉE' && (
-                          <option 
-                            value="REFUSÉE"
-                            style={{ backgroundColor: '#fee2e2' }}
-                          >
-                            ❌ Refuser
-                          </option>
-                        )}
+                        <option value="EN COURS" style={{ backgroundColor: '#e2f0fa' }}>
+                          🔄 En cours
+                        </option>
+                        <option value="ACCEPTÉE" style={{ backgroundColor: '#e2f3e2' }}>
+                          ✅ Accepter
+                        </option>
+                        <option value="REFUSÉE" style={{ backgroundColor: '#fee2e2' }}>
+                          ❌ Refuser
+                        </option>
                       </select>
                     </div>
                   </td>
@@ -501,8 +458,7 @@ const Candidatenrecruteur = () => {
                   <span 
                     className="modal-statut-badge"
                     style={{
-                      backgroundColor: getStatutPastelColor(selectedCandidat.statut),
-                      borderColor: '#dddddd'
+                      backgroundColor: getStatutPastelColor(selectedCandidat.statut)
                     }}
                   >
                     {getStatutIcon(selectedCandidat.statut)} {getStatutLibelle(selectedCandidat.statut)}
@@ -577,28 +533,16 @@ const Candidatenrecruteur = () => {
                       backgroundColor: getStatutPastelColor(selectedCandidat.statut)
                     }}
                   >
-                    <option 
-                      value="EN ATTENTE"
-                      style={{ backgroundColor: '#fef3e2' }}
-                    >
+                    <option value="EN ATTENTE" style={{ backgroundColor: '#fef3e2' }}>
                       ⏳ En attente
                     </option>
-                    <option 
-                      value="EN COURS"
-                      style={{ backgroundColor: '#e2f0fa' }}
-                    >
+                    <option value="EN COURS" style={{ backgroundColor: '#e2f0fa' }}>
                       🔄 En cours
                     </option>
-                    <option 
-                      value="ACCEPTÉE"
-                      style={{ backgroundColor: '#e2f3e2' }}
-                    >
+                    <option value="ACCEPTÉE" style={{ backgroundColor: '#e2f3e2' }}>
                       ✅ Accepter
                     </option>
-                    <option 
-                      value="REFUSÉE"
-                      style={{ backgroundColor: '#fee2e2' }}
-                    >
+                    <option value="REFUSÉE" style={{ backgroundColor: '#fee2e2' }}>
                       ❌ Refuser
                     </option>
                   </select>

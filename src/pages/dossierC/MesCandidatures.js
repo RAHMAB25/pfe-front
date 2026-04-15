@@ -72,22 +72,30 @@ export default function MesCandidatures() {
     }
   };
 
-  const calculateStats = (data) => {
-    const enAttente = data.filter(c => c.statut === "EN_ATTENTE").length;
-    const acceptees = data.filter(c => c.statut === "ACCEPTE").length;
-    const refusees = data.filter(c => c.statut === "REFUSE").length;
-    const total = data.length;
-    
-    setStats({
-      total,
-      enAttente,
-      acceptees,
-      refusees,
-      tauxAcceptation: total > 0 ? Math.round((acceptees / total) * 100) : 0
-    });
-  };
+const calculateStats = (data) => {
+  // Normaliser les statuts pour le calcul
+  const normalizedData = data.map(c => {
+    let statut = c.statut;
+    if (statut === "ACCEPTÉE") statut = "ACCEPTE";
+    if (statut === "REFUSÉE") statut = "REFUSE";
+    return { ...c, statut };
+  });
 
-// Dans MesCandidatures.jsx, corrigez la fonction getStatusBadge
+  const enAttente = normalizedData.filter(c => c.statut === "EN_ATTENTE").length;
+  const acceptees = normalizedData.filter(c => c.statut === "ACCEPTE").length;
+  const refusees = normalizedData.filter(c => c.statut === "REFUSE").length;
+  const total = normalizedData.length;
+  
+  setStats({
+    total,
+    enAttente,
+    acceptees,
+    refusees,
+    tauxAcceptation: total > 0 ? Math.round((acceptees / total) * 100) : 0
+  });
+};
+
+// Remplacez la fonction getStatusBadge par celle-ci (si vous voulez corriger aussi les badges) :
 const getStatusBadge = (statut) => {
   // Gérer les deux formats possibles
   let normalizedStatut = statut;
@@ -185,11 +193,19 @@ const getStatusBadge = (statut) => {
     });
   };
 
-  const getFilteredCandidatures = () => {
-    if (filterStatus === "TOUS") return candidatures;
-    return candidatures.filter(c => c.statut === filterStatus);
-  };
-
+ const getFilteredCandidatures = () => {
+  let filtered = [...candidatures];
+  
+  if (filterStatus === "TOUS") return filtered;
+  
+  // Normaliser les statuts pour le filtrage
+  return filtered.filter(c => {
+    let statut = c.statut;
+    if (statut === "ACCEPTÉE") statut = "ACCEPTE";
+    if (statut === "REFUSÉE") statut = "REFUSE";
+    return statut === filterStatus;
+  });
+};
   if (loading) {
     return (
       <Container className="text-center mt-5">

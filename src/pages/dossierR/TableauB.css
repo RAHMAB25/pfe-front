@@ -1,33 +1,42 @@
-/* TableauB.css */
+/* TableauB.css - Version professionnelle en niveaux de gris (sans offres moins demandées) */
 
 :root {
-  --gray-50: #f9fafb;
-  --gray-100: #f3f4f6;
-  --gray-200: #e5e7eb;
-  --gray-300: #d1d5db;
-  --gray-400: #9ca3af;
-  --gray-500: #6b7280;
-  --gray-600: #4b5563;
+  /* Palette de gris professionnelle */
+  --gray-50: #F9FAFB;
+  --gray-100: #F3F4F6;
+  --gray-200: #E5E7EB;
+  --gray-300: #D1D5DB;
+  --gray-400: #9CA3AF;
+  --gray-500: #6B7280;
+  --gray-600: #4B5563;
   --gray-700: #374151;
-  --gray-800: #1f2937;
+  --gray-800: #1F2937;
   --gray-900: #111827;
-  --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.15);
+  
+  /* Gris accent pour les éléments importants */
+  --accent-dark: #374151;
+  --accent-medium: #6B7280;
+  --accent-light: #9CA3AF;
+  
+  /* Ombres douces */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
-/* ===== CONTAINER PRINCIPAL ===== */
+/* Container principal */
 .dashboard-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-50) 100%);
   padding: 2rem;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-/* ===== HEADER ===== */
+/* Header */
 .dashboard-header {
   background: white;
-  border-radius: 16px;
+  border-radius: 20px;
   padding: 2rem;
   margin-bottom: 2rem;
   display: flex;
@@ -38,114 +47,343 @@
 }
 
 .dashboard-header h1 {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 1.875rem;
+  font-weight: 600;
   color: var(--gray-800);
   margin: 0 0 0.5rem 0;
+  letter-spacing: -0.025em;
 }
 
 .dashboard-header p {
-  font-size: 1.1rem;
+  font-size: 0.9375rem;
   color: var(--gray-600);
   margin: 0;
 }
 
-/* ===== STATS ===== */
-.stats {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+/* Stats header */
+.header-stats {
+  display: flex;
+  gap: 2rem;
 }
 
-.card {
+.mini-stat {
+  text-align: center;
+  padding: 0 1rem;
+  border-left: 1px solid var(--gray-200);
+}
+
+.mini-stat:first-child {
+  border-left: none;
+}
+
+.mini-stat .stat-value {
+  display: block;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  line-height: 1.2;
+}
+
+.mini-stat .stat-label {
+  font-size: 0.8125rem;
+  color: var(--gray-500);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
   background: white;
-  border-radius: 16px;
+  padding: 0.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+}
+
+.tab {
+  padding: 0.625rem 1.5rem;
+  background: transparent;
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--gray-600);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+}
+
+.tab:hover {
+  color: var(--gray-700);
+  background: var(--gray-100);
+}
+
+.tab.active {
+  color: white;
+  background: var(--gray-700);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Cartes graphiques */
+.charts-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.chart-card {
+  background: white;
+  border-radius: 20px;
   padding: 1.5rem;
   box-shadow: var(--shadow-md);
   border: 1px solid var(--gray-200);
   transition: all 0.3s ease;
 }
 
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-  border-color: var(--gray-300);
+.chart-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
 }
 
-.card h3 {
-  font-size: 1rem;
-  color: var(--gray-500);
-  margin: 0 0 0.5rem 0;
+.chart-card.full-width {
+  width: 100%;
+}
+
+.chart-card h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  margin: 0 0 1.5rem 0;
+  letter-spacing: -0.2px;
+}
+
+/* Section analyse */
+.demand-analysis {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Classement */
+.ranking-section {
+  background: white;
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--gray-200);
+}
+
+.ranking-section h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  margin: 0 0 1.5rem 0;
+}
+
+.ranking-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.ranking-card {
+  padding: 1.5rem;
+  border-radius: 16px;
+  text-align: center;
+  transition: all 0.3s ease;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+}
+
+.ranking-card.best {
+  background: var(--gray-800);
+  color: white;
+}
+
+.ranking-card.avg {
+  background: var(--gray-500);
+  color: white;
+}
+
+.ranking-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  opacity: 0.9;
+}
+
+.ranking-card h4 {
+  font-size: 0.875rem;
+  margin: 0 0 1rem 0;
   font-weight: 500;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.card p {
-  font-size: 2rem;
-  font-weight: 700;
+.offre-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0.5rem 0;
+}
+
+.stat {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0.5rem 0;
+}
+
+.taux {
+  font-size: 0.8125rem;
+  opacity: 0.85;
+}
+
+/* Conseils */
+.advice-section {
+  background: white;
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--gray-200);
+}
+
+.advice-section h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  margin: 0 0 1.5rem 0;
+}
+
+.advice-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.advice-card {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background: var(--gray-50);
+  border-left: 3px solid;
+}
+
+.advice-card.warning {
+  border-left-color: var(--gray-600);
+  background: var(--gray-100);
+}
+
+.advice-card.info {
+  border-left-color: var(--gray-500);
+  background: var(--gray-50);
+}
+
+.advice-card.success {
+  border-left-color: var(--gray-700);
+  background: var(--gray-100);
+}
+
+.advice-icon {
+  font-size: 1.25rem;
+}
+
+.advice-card strong {
+  display: block;
+  margin-bottom: 0.25rem;
   color: var(--gray-800);
+  font-weight: 600;
+}
+
+.advice-card p {
   margin: 0;
+  color: var(--gray-600);
+  font-size: 0.8125rem;
+  line-height: 1.5;
 }
 
-.card:last-child p {
-  font-size: 1.2rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* ===== SECTION OFFRES RÉCENTES ===== */
+/* Liste des offres */
 .recent-offres {
   background: white;
-  border-radius: 16px;
+  border-radius: 20px;
   padding: 1.5rem;
   box-shadow: var(--shadow-md);
   border: 1px solid var(--gray-200);
 }
 
 .recent-offres h2 {
-  font-size: 1.3rem;
+  font-size: 1.125rem;
   font-weight: 600;
-  color: var(--gray-800);
+  color: var(--gray-700);
   margin: 0 0 1.5rem 0;
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--gray-200);
 }
 
-/* ===== LISTE DES OFFRES ===== */
 .offre-item {
   padding: 1.25rem;
   margin-bottom: 1rem;
   background: var(--gray-50);
-  border-radius: 12px;
+  border-radius: 14px;
   border: 1px solid var(--gray-200);
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .offre-item:hover {
   background: white;
   border-color: var(--gray-300);
   box-shadow: var(--shadow-sm);
-  transform: translateX(4px);
+  transform: translateX(2px);
+}
+
+.offre-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .offre-item h4 {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--gray-800);
-  margin: 0 0 0.5rem 0;
+  margin: 0;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.status-badge.has-candidatures {
+  background: var(--gray-200);
+  color: var(--gray-700);
+}
+
+.status-badge.no-candidatures {
+  background: var(--gray-100);
+  color: var(--gray-500);
 }
 
 .offre-date {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: var(--gray-500);
   margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 .offre-description {
-  font-size: 0.95rem;
+  font-size: 0.875rem;
   color: var(--gray-600);
-  margin: 0;
+  margin: 0 0 1rem 0;
   line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -153,19 +391,36 @@
   overflow: hidden;
 }
 
-/* ===== ÉTATS ===== */
+.offre-stats-mini {
+  display: flex;
+  gap: 1.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--gray-200);
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  font-size: 0.8125rem;
+  color: var(--gray-600);
+  font-weight: 500;
+}
+
+/* États de chargement */
 .loading-state {
   text-align: center;
-  padding: 3rem;
+  padding: 4rem;
+  background: white;
+  border-radius: 20px;
+  box-shadow: var(--shadow-md);
 }
 
 .loading-spinner {
   width: 40px;
   height: 40px;
   border: 3px solid var(--gray-200);
-  border-top-color: var(--gray-500);
+  border-top-color: var(--gray-600);
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 0.8s linear infinite;
   margin: 0 auto 1rem;
 }
 
@@ -173,45 +428,68 @@
   text-align: center;
   padding: 3rem;
   color: var(--gray-500);
-  font-size: 1rem;
+  font-size: 0.875rem;
   background: var(--gray-50);
-  border-radius: 12px;
-  border: 2px dashed var(--gray-300);
+  border-radius: 14px;
+  border: 1px dashed var(--gray-300);
 }
 
-/* ===== ANIMATIONS ===== */
+/* Animation */
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
 
-/* ===== RESPONSIVE ===== */
+/* Responsive */
+@media (max-width: 1024px) {
+  .ranking-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
 @media (max-width: 768px) {
   .dashboard-container {
     padding: 1rem;
   }
   
   .dashboard-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
     padding: 1.5rem;
+  }
+  
+  .header-stats {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .mini-stat {
+    border-left: none;
+    padding: 0 0.75rem;
   }
   
   .dashboard-header h1 {
     font-size: 1.5rem;
   }
   
-  .stats {
-    grid-template-columns: 1fr;
+  .tabs {
+    flex-wrap: wrap;
+  }
+  
+  .tab {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem;
+    font-size: 0.8125rem;
+  }
+  
+  .offre-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .offre-stats-mini {
     gap: 1rem;
-  }
-  
-  .card p {
-    font-size: 1.5rem;
-  }
-  
-  .card:last-child p {
-    font-size: 1rem;
-  }
-  
-  .offre-item {
-    padding: 1rem;
   }
 }

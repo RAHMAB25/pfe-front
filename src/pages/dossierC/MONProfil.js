@@ -2,13 +2,17 @@ import { useState, useEffect } from "react";
 import { 
   FaUser, FaFile, FaSave, FaSpinner, FaCheckCircle,
   FaExclamationTriangle, FaCloudUploadAlt, FaEye, 
-  FaBars, FaTimes, FaTrash
+  FaBars, FaTimes, FaTrash, FaUserMinus
 } from "react-icons/fa";
-import "./Condidat.css";
+import { useNavigate } from "react-router-dom";
+import "./MonProfil.css";
 
 export default function MonProfil() {
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [user, setUser] = useState({
     nom: "",
     prénom: "",
@@ -16,7 +20,7 @@ export default function MonProfil() {
     téléphone: "",
     domaine: "",
     localisation: "",
-    cv: "", // Changed from cvFilename to match database field
+    cv: "",
     bio: "Décrivez votre parcours et vos objectifs..."
   });
   
@@ -38,14 +42,12 @@ export default function MonProfil() {
         });
         const data = await res.json();
         
-        // Add bio if not present
         const userData = {
           ...data,
           bio: data.bio || "Décrivez votre parcours et vos objectifs..."
         };
         
         setUser(userData);
-        // Calculer progression
         calculerProgression(userData);
       } catch (err) {
         console.error(err);
@@ -59,14 +61,14 @@ export default function MonProfil() {
 
   const calculerProgression = (data) => {
     let count = 0;
-    let total = 7; // Nombre total de champs à vérifier
+    let total = 7;
     if (data.nom) count++;
     if (data.prénom) count++;
     if (data.email) count++;
     if (data.téléphone) count++;
     if (data.localisation) count++;
     if (data.domaine) count++;
-    if (data.cv) count++; // Changed from cvFilename to cv
+    if (data.cv) count++;
     setProgression(Math.round((count / total) * 100));
   };
 
@@ -118,7 +120,6 @@ export default function MonProfil() {
     const token = localStorage.getItem("token");
     
     try {
-      // Update profile without CV first
       const profileRes = await fetch("http://localhost:3000/profile", {
         method: "PUT",
         headers: { 
@@ -137,7 +138,6 @@ export default function MonProfil() {
 
       if (!profileRes.ok) throw new Error("Erreur lors de la mise à jour du profil");
 
-      // Upload new CV if selected
       if (cvFile) {
         setUploading(true);
         const formData = new FormData();
@@ -168,6 +168,38 @@ export default function MonProfil() {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    setDeleting(true);
+    const token = localStorage.getItem("token");
+    
+    try {
+      const res = await fetch("http://localhost:3000/delete-account", {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || "Erreur lors de la suppression");
+      }
+
+      localStorage.removeItem("token");
+      showNotification("success", "Votre compte a été supprimé avec succès");
+      
+      setTimeout(() => {
+        navigate("/");
+        window.location.reload();
+      }, 2000);
+      
+    } catch (err) {
+      console.error(err);
+      showNotification("error", err.message || "Erreur lors de la suppression du compte");
+      setShowDeleteConfirm(false);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   const toggleCvBar = () => {
     setShowCvBar(!showCvBar);
   };
@@ -193,7 +225,51 @@ export default function MonProfil() {
         </div>
       )}
 
-      {/* Sidebar - version ultra simplifiée */}
+      {/* Modal de confirmation de suppression */}
+      {showDeleteConfirm && (
+        <div className="profil-modal-overlay">
+          <div className="profil-modal">
+            <div className="profil-modal-header">
+              <h3>⚠️ Supprimer mon compte</h3>
+              <button className="profil-modal-close" onClick={() => setShowDeleteConfirm(false)}>
+                <FaTimes />
+              </button>
+            </div>
+            <div className="profil-modal-body">
+              <p>Êtes-vous sûr de vouloir supprimer définitivement votre compte ?</p>
+              <p className="profil-modal-warning">
+                Cette action est <strong>IRRÉVERSIBLE</strong> et entraînera :
+              </p>
+              <ul>
+                <li>La suppression de toutes vos informations personnelles</li>
+                <li>La suppression de votre CV</li>
+                <li>La suppression de toutes vos candidatures</li>
+                <li>La suppression de vos notifications</li>
+              </ul>
+              <p className="profil-modal-confirm">Confirmez-vous la suppression ?</p>
+            </div>
+            <div className="profil-modal-footer">
+              <button 
+                className="profil-modal-cancel" 
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={deleting}
+              >
+                Annuler
+              </button>
+              <button 
+                className="profil-modal-delete" 
+                onClick={handleDeleteAccount}
+                disabled={deleting}
+              >
+                {deleting ? <FaSpinner className="spin" /> : <FaUserMinus />}
+                {deleting ? "Suppression..." : "Oui, supprimer mon compte"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Sidebar */}
       <div className={`profil-sidebar ${sidebarOpen ? 'open' : ''} ${mobileMenuOpen ? 'mobile-open' : ''}`}>
         <div className="profil-sidebar-header">
           <div className="profil-logo">SmartHire</div>
@@ -226,7 +302,6 @@ export default function MonProfil() {
           </div>
         </div>
 
-        {/* Mini barre CV dans le sidebar */}
         {showCvBar && (
           <div className="profil-sidebar-cv-mini">
             <div className="profil-sidebar-cv-header">
@@ -294,7 +369,6 @@ export default function MonProfil() {
           </div>
         )}
 
-        {/* Bouton pour réouvrir la barre CV si elle est fermée */}
         {!showCvBar && (
           <button className="profil-sidebar-cv-toggle" onClick={toggleCvBar}>
             <FaFile /> Afficher mon CV
@@ -316,7 +390,6 @@ export default function MonProfil() {
 
         {/* Contenu principal */}
         <div className="profil-content-wrapper">
-          {/* En-tête avec email */}
           <div className="profil-header-card">
             <div className="profil-header-info">
               <h2>{user.email}</h2>
@@ -331,9 +404,7 @@ export default function MonProfil() {
             </div>
           </div>
 
-          {/* Grille principale - UNE SEULE COLONNE */}
           <div className="profil-grid-single">
-            {/* Informations personnelles */}
             <div className="profil-card">
               <div className="profil-card-header">
                 <h3>Informations personnelles</h3>
@@ -377,6 +448,15 @@ export default function MonProfil() {
                 <button className="profil-btn-save" onClick={handleUpdate} disabled={saving || uploading}>
                   {saving || uploading ? <FaSpinner className="spin" /> : <FaSave />}
                   {saving ? "Sauvegarde..." : uploading ? "Upload CV..." : "Sauvegarder"}
+                </button>
+                
+                <button 
+                  className="profil-btn-delete"
+                  onClick={() => setShowDeleteConfirm(true)}
+                  type="button"
+                >
+                  <FaUserMinus />
+                  Supprimer mon compte
                 </button>
               </div>
             </div>

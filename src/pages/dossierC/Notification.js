@@ -1,3 +1,4 @@
+// Notifications.jsx - Version avec design amélioré et intégration parfaite
 import { useState, useEffect, useRef } from "react";
 import jwtDecode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
@@ -9,32 +10,27 @@ const Notifications = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState("toutes");
-  const [toast, setToast] = useState(null); // État pour le popup toast
+  const [toast, setToast] = useState(null);
   const navigate = useNavigate();
   const toastTimeoutRef = useRef(null);
 
   const token = localStorage.getItem("token");
   const [user, setUser] = useState(null);
 
-  // Fonction pour afficher un toast de notification
   const showToast = (notification) => {
-    // Annuler le timeout précédent
     if (toastTimeoutRef.current) {
       clearTimeout(toastTimeoutRef.current);
     }
 
-    // Afficher le toast
     setToast(notification);
 
-    // Masquer automatiquement après 5 secondes
     toastTimeoutRef.current = setTimeout(() => {
       setToast(null);
     }, 5000);
   };
 
-  // Jouer un son de notification (optionnel)
   const playNotificationSound = () => {
-    const audio = new Audio("/notification.mp3"); // Placez un fichier MP3 dans public/
+    const audio = new Audio("/notification.mp3");
     audio.play().catch(e => console.log("Son non joué:", e));
   };
 
@@ -47,27 +43,20 @@ const Notifications = () => {
         if (decoded.role !== "CANDIDAT") {
           navigate("/dashboard");
         } else {
-          // Connexion Socket.IO pour les candidats
           socketService.connect(token, decoded.id);
           
-          // Écouter les nouvelles notifications en temps réel
           const listenerId = socketService.onNotification((newNotification) => {
             console.log("Nouvelle notification temps réel:", newNotification);
             
-            // Ajouter la nouvelle notification en haut de la liste
             setNotifications(prev => {
               const exists = prev.some(n => n.id === newNotification.id);
               if (exists) return prev;
               return [newNotification, ...prev];
             });
             
-            // Afficher le popup toast
             showToast(newNotification);
-            
-            // Jouer un son
             playNotificationSound();
             
-            // Notification desktop
             if (Notification.permission === "granted") {
               new Notification("📢 Nouvelle notification", {
                 body: newNotification.message,
@@ -78,7 +67,6 @@ const Notifications = () => {
               });
             }
             
-            // Animation de la favicon (optionnel)
             animateFavicon();
           });
           
@@ -100,12 +88,11 @@ const Notifications = () => {
     }
   }, [token, navigate]);
 
-  // Animation de la favicon
   const animateFavicon = () => {
     const favicon = document.querySelector("link[rel='icon']");
     if (favicon) {
       const originalHref = favicon.href;
-      favicon.href = "/favicon-bell.ico"; // Avoir une favicon alternative
+      favicon.href = "/favicon-bell.ico";
       setTimeout(() => {
         favicon.href = originalHref;
       }, 2000);
@@ -115,7 +102,6 @@ const Notifications = () => {
   useEffect(() => {
     if (user) {
       fetchNotifications();
-      // Rafraîchir toutes les 30 secondes
       const interval = setInterval(fetchNotifications, 30000);
       return () => clearInterval(interval);
     }
@@ -199,9 +185,7 @@ const Notifications = () => {
     return date.toLocaleDateString('fr-FR', {
       day: '2-digit',
       month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      year: 'numeric'
     });
   };
 
@@ -209,23 +193,23 @@ const Notifications = () => {
     if (!statut) return '📌';
     
     switch(statut) {
-      case 'ACCEPTÉE': return '🎉';
-      case 'REFUSÉE': return '💼';
-      case 'EN COURS': return '📋';
-      case 'EN ATTENTE': return '⏳';
+      case 'ACCEPTÉE': return '✓';
+      case 'REFUSÉE': return '✗';
+      case 'EN COURS': return '⟳';
+      case 'EN ATTENTE': return '⏱';
       default: return '📌';
     }
   };
 
   const getColorForStatut = (statut) => {
-    if (!statut) return '#6b7280';
+    if (!statut) return '#6c5ce7';
     
     switch(statut) {
-      case 'ACCEPTÉE': return '#10b981';
-      case 'REFUSÉE': return '#ef4444';
-      case 'EN COURS': return '#3b82f6';
-      case 'EN ATTENTE': return '#f59e0b';
-      default: return '#6b7280';
+      case 'ACCEPTÉE': return '#00b894';
+      case 'REFUSÉE': return '#ff7675';
+      case 'EN COURS': return '#74b9ff';
+      case 'EN ATTENTE': return '#fdcb6e';
+      default: return '#6c5ce7';
     }
   };
 
@@ -257,7 +241,6 @@ const Notifications = () => {
     return filtered;
   };
 
-  // Demander la permission pour les notifications desktop
   useEffect(() => {
     if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
@@ -286,9 +269,9 @@ const Notifications = () => {
           </div>
           <div className="toast-content">
             <div className="toast-title">
-              {toast.nouveau_statut === 'ACCEPTÉE' ? '🎉 Félicitations !' :
-               toast.nouveau_statut === 'REFUSÉE' ? '💼 Mise à jour' :
-               '📢 Nouvelle notification'}
+              {toast.nouveau_statut === 'ACCEPTÉE' ? 'Félicitations !' :
+               toast.nouveau_statut === 'REFUSÉE' ? 'Mise à jour' :
+               'Nouvelle notification'}
             </div>
             <div className="toast-message">{toast.message}</div>
             <div className="toast-offre">{toast.offre_titre}</div>
@@ -301,38 +284,45 @@ const Notifications = () => {
       )}
 
       <div className="notifications-container">
-        {/* En-tête avec compteur animé */}
+        {/* En-tête */}
         <div className="notifications-header">
-          <div className="header-title">
-            <h1>
-              <span className="header-icon">🔔</span>
-              Mes notifications
-            </h1>
-            {nonLuesCount > 0 && (
-              <span className="non-lues-badge pulse">
-                {nonLuesCount} nouvelle{nonLuesCount > 1 ? 's' : ''}
-              </span>
-            )}
-          </div>
-          
-          <div className="header-actions">
-            <select 
-              className="filter-select"
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-            >
-              <option value="toutes">Toutes les notifications</option>
-              <option value="non-lues">Non lues ({nonLuesCount})</option>
-              <option value="lues">Lues</option>
-              <option value="acceptees">✅ Acceptées</option>
-              <option value="refusees">❌ Refusées</option>
-            </select>
+          <div className="notifications-header-content">
+            <div className="header-title">
+              <h1>
+                <span className="header-icon">🔔</span>
+                Notifications
+              </h1>
+              {nonLuesCount > 0 && (
+                <span className="non-lues-badge pulse">
+                  {nonLuesCount} nouvelle{nonLuesCount > 1 ? 's' : ''}
+                </span>
+              )}
+            </div>
             
-            {nonLuesCount > 0 && (
-              <button className="btn-mark-all" onClick={marquerToutCommeLu}>
-                ✓ Tout marquer comme lu
-              </button>
-            )}
+            <div className="header-actions">
+              <div className="filter-wrapper">
+                <select 
+                  className="filter-select"
+                  value={filter}
+                  onChange={(e) => setFilter(e.target.value)}
+                >
+                  <option value="toutes">Toutes les notifications</option>
+                  <option value="non-lues">Non lues ({nonLuesCount})</option>
+                  <option value="lues">Lues</option>
+                  <option value="acceptees">Acceptées</option>
+                  <option value="refusees">Refusées</option>
+                </select>
+              </div>
+              
+              {nonLuesCount > 0 && (
+                <button className="btn-mark-all" onClick={marquerToutCommeLu}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  Tout marquer comme lu
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
@@ -346,94 +336,104 @@ const Notifications = () => {
           </div>
         )}
 
-        {/* Liste des notifications */}
-        {notificationsFiltrees.length === 0 ? (
-          <div className="notifications-empty fade-in">
-            <div className="empty-icon">📪</div>
-            <h3>Aucune notification</h3>
-            <p>
-              {filter === 'non-lues' 
-                ? "✨ Vous êtes à jour ! Aucune notification non lue." 
-                : filter === 'acceptees'
-                ? "🎯 Aucune candidature acceptée pour le moment"
-                : filter === 'refusees'
-                ? "💪 Aucune candidature refusée, continuez comme ça !"
-                : "🌟 Vous n'avez pas encore de notifications"}
-            </p>
-            <p className="empty-hint">
-              Les notifications apparaîtront ici quand les recruteurs répondront à vos candidatures
-            </p>
-          </div>
-        ) : (
-          <div className="notifications-list">
-            {notificationsFiltrees.map((notif, index) => {
-              const icon = getIconForStatut(notif.nouveau_statut);
-              const color = getColorForStatut(notif.nouveau_statut);
-              const isNew = !notif.est_lu;
-              
-              return (
-                <div
-                  key={notif.id}
-                  className={`notification-item ${isNew ? 'non-lue' : ''} slide-in`}
-                  style={{ animationDelay: `${index * 0.05}s` }}
-                  onClick={() => isNew && marquerCommeLue(notif.id)}
-                >
-                  <div 
-                    className="notification-icon"
-                    style={{ backgroundColor: color + '20' }}
+        {/* Liste des notifications avec scroll */}
+        <div className="notifications-list-container">
+          {notificationsFiltrees.length === 0 ? (
+            <div className="notifications-empty fade-in">
+              <div className="empty-icon">
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                </svg>
+              </div>
+              <h3>Aucune notification</h3>
+              <p>
+                {filter === 'non-lues' 
+                  ? "Vous êtes à jour ! Aucune notification non lue." 
+                  : filter === 'acceptees'
+                  ? "Aucune candidature acceptée pour le moment"
+                  : filter === 'refusees'
+                  ? "Aucune candidature refusée, continuez comme ça !"
+                  : "Vous n'avez pas encore de notifications"}
+              </p>
+            </div>
+          ) : (
+            <div className="notifications-list">
+              {notificationsFiltrees.map((notif, index) => {
+                const icon = getIconForStatut(notif.nouveau_statut);
+                const color = getColorForStatut(notif.nouveau_statut);
+                const isNew = !notif.est_lu;
+                
+                return (
+                  <div
+                    key={notif.id}
+                    className={`notification-item ${isNew ? 'non-lue' : ''} slide-in`}
+                    style={{ animationDelay: `${index * 0.03}s` }}
+                    onClick={() => isNew && marquerCommeLue(notif.id)}
                   >
-                    <span style={{ color: color }}>{icon}</span>
-                  </div>
-                  
-                  <div className="notification-content">
-                    <div className="notification-header">
-                      <div className="notification-title">
-                        <span className="offre-titre">{notif.offre_titre || "Offre d'emploi"}</span>
-                        {isNew && (
-                          <span className="badge-nouveau">
-                            <span className="pulse-dot"></span>
-                            Nouveau
-                          </span>
-                        )}
-                      </div>
-                      <span className="notification-time">{formatDate(notif.date_creation)}</span>
+                    <div 
+                      className="notification-icon"
+                      style={{ backgroundColor: color + '15' }}
+                    >
+                      <span style={{ color: color }}>{icon}</span>
                     </div>
                     
-                    <p className="notification-message">{notif.message || "Mise à jour de votre candidature"}</p>
-                    
-                    <div className="notification-footer">
-                      <div className="recruteur-info">
-                        <span className="recruteur-icon">👤</span>
-                        {notif.recruteur_prenom || ""} {notif.recruteur_nom || "Recruteur"}
+                    <div className="notification-content">
+                      <div className="notification-header">
+                        <div className="notification-title">
+                          <span className="offre-titre">{notif.offre_titre || "Offre d'emploi"}</span>
+                          {isNew && (
+                            <span className="badge-nouveau">
+                              <span className="pulse-dot"></span>
+                              Nouveau
+                            </span>
+                          )}
+                        </div>
+                        <span className="notification-time">{formatDate(notif.date_creation)}</span>
                       </div>
                       
-                      {notif.nouveau_statut && (
-                        <div 
-                          className="statut-badge"
-                          style={{ 
-                            backgroundColor: color + '20',
-                            color: color,
-                            border: `1px solid ${color}40`
-                          }}
-                        >
-                          {icon} {getLibelleStatut(notif.nouveau_statut)}
+                      <p className="notification-message">{notif.message || "Mise à jour de votre candidature"}</p>
+                      
+                      <div className="notification-footer">
+                        <div className="recruteur-info">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                          </svg>
+                          {notif.recruteur_prenom || ""} {notif.recruteur_nom || "Recruteur"}
                         </div>
-                      )}
+                        
+                        {notif.nouveau_statut && (
+                          <div 
+                            className="statut-badge"
+                            style={{ 
+                              backgroundColor: color + '10',
+                              color: color,
+                            }}
+                          >
+                            {icon} {getLibelleStatut(notif.nouveau_statut)}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
+                );
+              })}
+            </div>
+          )}
+        </div>
         
-        {/* Bouton pour rafraîchir manuellement */}
+        {/* Bouton pour rafraîchir */}
         <button 
           className="refresh-btn"
           onClick={fetchNotifications}
           title="Rafraîchir les notifications"
         >
-          🔄
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M23 4v6h-6" />
+            <path d="M1 20v-6h6" />
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+          </svg>
         </button>
       </div>
     </>

@@ -1,0 +1,345 @@
+/* TabCondidat.css - Version avec palette de gris uniquement (sans cartes stats) */
+
+:root {
+  /* Palette de gris clairs et doux */
+  --gray-50: #F8FAFC;
+  --gray-100: #F1F5F9;
+  --gray-200: #E2E8F0;
+  --gray-300: #CBD5E1;
+  --gray-400: #94A3B8;
+  --gray-500: #64748B;
+  --gray-600: #475569;
+  --gray-700: #334155;
+  --gray-800: #1E293B;
+  
+  /* Couleurs douces pour les statuts (pastel) */
+  --warning-light: #FEF3C7;
+  --warning: #D97706;
+  --success-light: #D1FAE5;
+  --success: #059669;
+  --danger-light: #FEE2E2;
+  --danger: #DC2626;
+  
+  /* Variables d'interface - TOUT EN GRIS */
+  --bg-page: #F8FAFC;
+  --bg-white: #FFFFFF;
+  --border: #E2E8F0;
+  --text-primary: #334155;
+  --text-secondary: #64748B;
+  --text-muted: #94A3B8;
+  --accent: #64748B;
+  --accent-light: #F1F5F9;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+  --radius: 20px;
+  --radius-sm: 14px;
+  --radius-full: 9999px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg-page);
+}
+
+.dashboard-candidat {
+  min-height: 100vh;
+  background: var(--bg-page);
+}
+
+/* ==================== HEADER CLAIR ==================== */
+.dashboard-header-candidat {
+  background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+  padding: 2rem 2rem 2.5rem 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.header-content-candidat {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.greeting-badge-candidat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--accent-light);
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  color: var(--accent);
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.dashboard-header-candidat h1 {
+  color: var(--text-primary);
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.025em;
+}
+
+.dashboard-header-candidat p {
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.notif-chip-candidat {
+  background: var(--warning-light);
+  color: var(--warning);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  font-size: 0.75rem;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ==================== CHARTS SECTION ==================== */
+.charts-section-candidat {
+  max-width: 1400px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.section-header-candidat {
+  margin-bottom: 1.5rem;
+}
+
+.section-header-candidat h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.section-header-candidat p {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.chart-card-candidat {
+  background: var(--bg-white);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  height: 100%;
+  transition: all 0.2s ease;
+}
+
+.chart-card-candidat:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--gray-300);
+}
+
+.chart-header-candidat {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chart-header-candidat svg {
+  color: var(--accent);
+  font-size: 1rem;
+}
+
+.chart-header-candidat h4 {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.chart-body-candidat {
+  padding: 1rem;
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.bar-chart-body {
+  padding: 0.5rem 0.5rem 0.5rem 0;
+}
+
+/* Success rate */
+.success-rate-candidat {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: var(--gray-100);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  margin-top: 1rem;
+  align-self: center;
+  border: 1px solid var(--border);
+}
+
+.success-rate-candidat svg {
+  color: var(--success);
+}
+
+.success-rate-candidat strong {
+  color: var(--success);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-left: 0.25rem;
+}
+
+/* Empty state */
+.empty-chart {
+  text-align: center;
+  padding: 2rem;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 0.75rem;
+  opacity: 0.5;
+}
+
+.empty-chart p {
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.empty-chart span {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+/* ==================== LOADING & ERROR ==================== */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 1rem;
+  background: var(--bg-page);
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-container p {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 0.5rem;
+  background: var(--bg-page);
+}
+
+.error-icon {
+  font-size: 3rem;
+}
+
+.error-container h3 {
+  font-size: 1.125rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.error-container p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 1024px) {
+  .stats-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-header-candidat {
+    padding: 1.5rem;
+  }
+  
+  .dashboard-header-candidat h1 {
+    font-size: 1.4rem;
+  }
+  
+  .chart-header-candidat {
+    padding: 0.75rem 1rem;
+  }
+  
+  .chart-body-candidat {
+    padding: 0.75rem;
+    min-height: 320px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-content-candidat {
+    flex-direction: column;
+  }
+  
+  .greeting-badge-candidat {
+    font-size: 0.7rem;
+  }
+  
+  .dashboard-header-candidat h1 {
+    font-size: 1.2rem;
+  }
+  
+  .section-header-candidat h3 {
+    font-size: 1rem;
+  }
+}
+
+/* ==================== ANIMATIONS DOUCES ==================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chart-card-candidat {
+  animation: fadeIn 0.4s ease-out;
+}
