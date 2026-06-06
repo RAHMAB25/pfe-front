@@ -1,9 +1,9 @@
-// LesOffres.js - Version complète avec modal de suppression amélioré
+// LesOffres.js - Version complète avec modales améliorées
 import { useState, useEffect, useCallback, useMemo } from "react";
 import jwtDecode from "jwt-decode";
 import "./LesOffres.css";
 
-// Composant modal pour les détails de l'offre
+// Composant modal pour les détails de l'offre - Version sans bouton annuler
 const OffreDetailsModal = ({ offre, onClose }) => {
   if (!offre) return null;
 
@@ -19,44 +19,36 @@ const OffreDetailsModal = ({ offre, onClose }) => {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-container" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>✕</button>
-        
-        <div className="modal-header">
-          <h2>{offre.titre}</h2>
-          {offre.recruteur_nom && (
-            <div className="modal-recruteur">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
-              </svg>
-              {offre.recruteur_nom}
-            </div>
-          )}
+      <div className="modal-container details-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-close-wrapper">
+          <button type="button" className="modal-close-x" onClick={onClose}>
+            ✕
+          </button>
         </div>
-
-        <div className="modal-body">
-          <div className="modal-section">
-            <h3>Description du poste</h3>
-            <p>{offre.description}</p>
-          </div>
-
-          <div className="modal-info-grid">
-            <div className="modal-info-item">
-              <span className="info-label">📅 Publiée le</span>
-              <span className="info-value">{formatDate(offre.date_creation)}</span>
-            </div>
-            {offre.date_limite && (
-              <div className="modal-info-item">
-                <span className="info-label">⏰ Date limite</span>
-                <span className="info-value">{formatDate(offre.date_limite)}</span>
+        
+        <div className="modal-header details-header">
+          <div className="details-title-section">
+            <h2>{offre.titre}</h2>
+            {offre.recruteur_nom && (
+              <div className="modal-recruteur">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+                <span>{offre.recruteur_nom}</span>
               </div>
             )}
           </div>
         </div>
 
-        <div className="modal-footer">
-          <button className="btn-secondary" onClick={onClose}>Fermer</button>
+        <div className="modal-body details-body">
+          <div className="details-section description-section">
+            <div className="section-icon">📋</div>
+            <div className="section-content">
+              <h3>Description du poste</h3>
+              <p>{offre.description}</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -117,35 +109,40 @@ const PostulerModal = ({ offreId, offreTitre, onClose, onSuccess }) => {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-container" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>✕</button>
+      <div className="modal-container postuler-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-close-wrapper">
+          <button type="button" className="modal-close-x" onClick={onClose}>
+            ✕
+          </button>
+        </div>
         
         <div className="modal-header">
           <h2>Postuler</h2>
           <p className="modal-subtitle">{offreTitre}</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="modal-form">
-          <div className="form-group">
-            <label>CV (PDF) <span className="required">*</span></label>
-            <div className="file-dropzone" onClick={() => document.getElementById('cv-file').click()}>
-              <input id="cv-file" type="file" accept=".pdf" onChange={handleFileChange} hidden />
-              {cvFile ? (
-                <div className="file-selected">📄 {cvFile.name}</div>
-              ) : (
-                <div className="file-placeholder">
-                  <span className="upload-icon">📁</span>
-                  <span>Cliquez pour sélectionner votre CV</span>
-                  <small>PDF uniquement (max 5 Mo)</small>
-                </div>
-              )}
+        <form onSubmit={handleSubmit}>
+          <div className="modal-body">
+            <div className="form-group">
+              <label>CV (PDF) <span className="required">*</span></label>
+              <div className="file-dropzone" onClick={() => document.getElementById('cv-file').click()}>
+                <input id="cv-file" type="file" accept=".pdf" onChange={handleFileChange} hidden />
+                {cvFile ? (
+                  <div className="file-selected">📄 {cvFile.name}</div>
+                ) : (
+                  <div className="file-placeholder">
+                    <span className="upload-icon">📁</span>
+                    <span>Cliquez pour sélectionner votre CV</span>
+                    <small>PDF uniquement (max 5 Mo)</small>
+                  </div>
+                )}
+              </div>
             </div>
+
+            {error && <div className="form-error">{error}</div>}
           </div>
 
-          {error && <div className="form-error">{error}</div>}
-
-          <div className="modal-actions">
-            <button type="button" className="btn-secondary" onClick={onClose}>Annuler</button>
+          <div className="modal-footer">
             <button type="submit" className="btn-primary" disabled={loading}>
               {loading ? "Envoi..." : "Envoyer"}
             </button>
@@ -169,58 +166,63 @@ const NouvelleOffreModal = ({ onClose, onAdd }) => {
       return;
     }
     setLoading(true);
+    setError("");
     await onAdd(formData);
     setLoading(false);
   };
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-container" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>✕</button>
+      <div className="modal-container add-offre-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-close-wrapper">
+          <button type="button" className="modal-close-x" onClick={onClose}>
+            ✕
+          </button>
+        </div>
         
         <div className="modal-header">
           <h2>Nouvelle offre</h2>
-          <p className="modal-subtitle">Créez une nouvelle opportunité</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="modal-form">
-          <div className="form-group">
-            <label>Titre <span className="required">*</span></label>
-            <input
-              type="text"
-              placeholder="Ex: Développeur Full Stack"
-              value={formData.titre}
-              onChange={(e) => setFormData({ ...formData, titre: e.target.value })}
-              className="form-input"
-            />
+        <form onSubmit={handleSubmit}>
+          <div className="modal-body">
+            <div className="form-group">
+              <label>Titre <span className="required">*</span></label>
+              <input
+                type="text"
+                placeholder="Ex: Développeur Full Stack"
+                value={formData.titre}
+                onChange={(e) => setFormData({ ...formData, titre: e.target.value })}
+                className="form-input"
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Description <span className="required">*</span></label>
+              <textarea
+                placeholder="Décrivez le poste, les missions..."
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                rows={4}
+                className="form-textarea"
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Date limite <span className="required">*</span></label>
+              <input
+                type="date"
+                value={formData.date_limite}
+                onChange={(e) => setFormData({ ...formData, date_limite: e.target.value })}
+                min={new Date().toISOString().split('T')[0]}
+                className="form-input"
+              />
+            </div>
+
+            {error && <div className="form-error">{error}</div>}
           </div>
 
-          <div className="form-group">
-            <label>Description <span className="required">*</span></label>
-            <textarea
-              placeholder="Décrivez le poste, les missions..."
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              rows={4}
-              className="form-textarea"
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Date limite <span className="required">*</span></label>
-            <input
-              type="date"
-              value={formData.date_limite}
-              onChange={(e) => setFormData({ ...formData, date_limite: e.target.value })}
-              min={new Date().toISOString().split('T')[0]}
-              className="form-input"
-            />
-          </div>
-
-          {error && <div className="form-error">{error}</div>}
-
-          <div className="modal-actions">
-            <button type="button" className="btn-secondary" onClick={onClose}>Annuler</button>
+          <div className="modal-footer single-button">
             <button type="submit" className="btn-primary" disabled={loading}>
               {loading ? "Création..." : "Créer l'offre"}
             </button>
@@ -231,75 +233,105 @@ const NouvelleOffreModal = ({ onClose, onAdd }) => {
   );
 };
 
-// Modal de suppression amélioré
+// Modal de suppression - Version améliorée avec design moderne
 const DeleteConfirmModal = ({ onConfirm, onCancel, offreTitre }) => {
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleConfirm = async () => {
+    setIsDeleting(true);
+    await onConfirm();
+    setIsDeleting(false);
+  };
+
   return (
     <div className="modal-overlay" onClick={onCancel}>
-      <div className="modal-container delete-modal" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onCancel}>✕</button>
+      <div className="modal-container delete-modal-modern" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-close-wrapper">
+          <button type="button" className="modal-close-x" onClick={onCancel}>
+            ✕
+          </button>
+        </div>
         
-        <div className="delete-modal-content">
-          <div className="delete-icon-wrapper">
-            <div className="delete-icon-circle">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M4 7h16M10 11v6M14 11v6M5 7l1 13a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-13"/>
-                <path d="M9 3h6v2H9z"/>
+        <div className="delete-modern-content">
+          {/* Icône animée */}
+          <div className="delete-icon-modern">
+            <div className="delete-icon-circle-modern">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 6h18"/>
+                <path d="M8 6V4h8v2"/>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+                <path d="M10 11v6"/>
+                <path d="M14 11v6"/>
               </svg>
             </div>
           </div>
-          
-          <div className="delete-modal-header">
-            <h2>Confirmer la suppression</h2>
-            <p>Cette action est irréversible</p>
+
+          {/* Titre et description */}
+          <div className="delete-modern-header">
+            <h2>Supprimer cette offre ?</h2>
+            <p>Cette action est irréversible et supprimera définitivement l'offre ainsi que toutes les candidatures associées.</p>
           </div>
-          
-          <div className="delete-modal-body">
-            <div className="delete-warning-box">
-              <span className="warning-icon">⚠️</span>
-              <div className="warning-text">
-                <strong>Vous êtes sur le point de supprimer :</strong>
-                <span className="offre-title-to-delete">"{offreTitre}"</span>
-              </div>
+
+          {/* Offre à supprimer */}
+          <div className="delete-offre-card">
+            <div className="delete-offre-icon">📄</div>
+            <div className="delete-offre-info">
+              <span className="delete-offre-label">Offre concernée</span>
+              <strong className="delete-offre-title">"{offreTitre}"</strong>
             </div>
-            
-            <ul className="delete-consequences">
-              <li>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          </div>
+
+          {/* Liste des conséquences */}
+          <div className="delete-consequences-modern">
+            <div className="consequence-item">
+              <div className="consequence-icon warning">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="12" cy="12" r="10"/>
                   <line x1="12" y1="8" x2="12" y2="12"/>
                   <line x1="12" y1="16" x2="12.01" y2="16"/>
                 </svg>
-                L'offre sera définitivement supprimée
-              </li>
-              <li>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              </div>
+              <span>L'offre sera définitivement supprimée</span>
+            </div>
+            <div className="consequence-item">
+              <div className="consequence-icon danger">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M20 12H4M12 4v16"/>
                 </svg>
-                Toutes les candidatures associées seront perdues
-              </li>
-              <li>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </div>
+              <span>Toutes les candidatures associées seront perdues</span>
+            </div>
+            <div className="consequence-item">
+              <div className="consequence-icon info">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
                 </svg>
-                Cette action ne peut pas être annulée
-              </li>
-            </ul>
+              </div>
+              <span>Aucune restauration possible après suppression</span>
+            </div>
           </div>
-          
-          <div className="delete-modal-footer">
-            <button className="btn-cancel" onClick={onCancel}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <line x1="18" y1="6" x2="6" y2="18"/>
-                <line x1="6" y1="6" x2="18" y2="18"/>
-              </svg>
+
+          {/* Boutons d'action */}
+          <div className="delete-modern-footer">
+            <button className="btn-delete-cancel" onClick={onCancel}>
               Annuler
             </button>
-            <button className="btn-confirm-delete" onClick={onConfirm}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M4 7h16M10 11v6M14 11v6M5 7l1 13a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-13"/>
-                <path d="M9 3h6v2H9z"/>
-              </svg>
-              Oui, supprimer
+            <button className="btn-delete-confirm" onClick={handleConfirm} disabled={isDeleting}>
+              {isDeleting ? (
+                <>
+                  <span className="spinner-small"></span>
+                  Suppression...
+                </>
+              ) : (
+                <>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M3 6h18M8 6V4h8v2"/>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+                  </svg>
+                  Oui, supprimer
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -594,45 +626,62 @@ export default function LesOffres() {
         </div>
       )}
 
-      {/* Edit Modal */}
+      {/* Edit Modal - Version sans bouton annuler */}
       {editingId && (
         <div className="modal-overlay" onClick={() => setEditingId(null)}>
-          <div className="modal-container small" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={() => setEditingId(null)}>✕</button>
+          <div className="modal-container edit-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-close-wrapper">
+              <button type="button" className="modal-close-x" onClick={() => setEditingId(null)}>
+                ✕
+              </button>
+            </div>
             <div className="modal-header">
               <h2>Modifier l'offre</h2>
             </div>
-            <div className="modal-form">
-              <input
-                type="text"
-                value={editedOffre.titre}
-                onChange={(e) => setEditedOffre({ ...editedOffre, titre: e.target.value })}
-                placeholder="Titre"
-                className="form-input"
-              />
-              <textarea
-                value={editedOffre.description}
-                onChange={(e) => setEditedOffre({ ...editedOffre, description: e.target.value })}
-                placeholder="Description"
-                rows={4}
-                className="form-textarea"
-              />
-              <input
-                type="date"
-                value={editedOffre.date_limite}
-                onChange={(e) => setEditedOffre({ ...editedOffre, date_limite: e.target.value })}
-                className="form-input"
-              />
-              <div className="modal-actions">
-                <button className="btn-secondary" onClick={() => setEditingId(null)}>Annuler</button>
-                <button className="btn-primary" onClick={() => handleUpdate(editingId)}>Sauvegarder</button>
+            <div className="modal-body">
+              <div className="form-group">
+                <label>Titre <span className="required">*</span></label>
+                <input
+                  type="text"
+                  value={editedOffre.titre}
+                  onChange={(e) => setEditedOffre({ ...editedOffre, titre: e.target.value })}
+                  placeholder="Titre"
+                  className="form-input"
+                />
               </div>
+              <div className="form-group">
+                <label>Description <span className="required">*</span></label>
+                <textarea
+                  value={editedOffre.description}
+                  onChange={(e) => setEditedOffre({ ...editedOffre, description: e.target.value })}
+                  placeholder="Description"
+                  rows={4}
+                  className="form-textarea"
+                />
+              </div>
+              <div className="form-group">
+                <label>Date limite <span className="required">*</span></label>
+                <input
+                  type="date"
+                  value={editedOffre.date_limite}
+                  onChange={(e) => setEditedOffre({ ...editedOffre, date_limite: e.target.value })}
+                  className="form-input"
+                />
+              </div>
+            </div>
+            <div className="modal-footer single-button">
+              <button className="btn-primary" onClick={() => handleUpdate(editingId)}>
+                Sauvegarder
+              </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Delete Confirmation Modal amélioré */}
+      {/* Modals */}
+      {showNewModal && <NouvelleOffreModal onClose={() => setShowNewModal(false)} onAdd={handleAddOffre} />}
+      {showDetailsModal && selectedOffreDetails && <OffreDetailsModal offre={selectedOffreDetails} onClose={() => { setShowDetailsModal(false); setSelectedOffreDetails(null); }} />}
+      {showPostulerModal && selectedOffre && <PostulerModal offreId={selectedOffre.id} offreTitre={selectedOffre.titre} onClose={() => { setShowPostulerModal(false); setSelectedOffre(null); }} onSuccess={() => showMessage("Candidature envoyée !")} />}
       {showDeleteModal && offreToDelete && (
         <DeleteConfirmModal
           onConfirm={handleConfirmDelete}
@@ -643,11 +692,6 @@ export default function LesOffres() {
           offreTitre={offreToDelete.titre}
         />
       )}
-
-      {/* Modals */}
-      {showNewModal && <NouvelleOffreModal onClose={() => setShowNewModal(false)} onAdd={handleAddOffre} />}
-      {showDetailsModal && selectedOffreDetails && <OffreDetailsModal offre={selectedOffreDetails} onClose={() => { setShowDetailsModal(false); setSelectedOffreDetails(null); }} />}
-      {showPostulerModal && selectedOffre && <PostulerModal offreId={selectedOffre.id} offreTitre={selectedOffre.titre} onClose={() => { setShowPostulerModal(false); setSelectedOffre(null); }} onSuccess={() => showMessage("Candidature envoyée !")} />}
     </div>
   );
 }

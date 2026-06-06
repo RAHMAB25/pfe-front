@@ -1,268 +1,212 @@
-// frontend/src/components/ASSISTANTIA.jsx
-import React, { useState, useRef, useEffect } from 'react';
-import axios from 'axios';
-import './ASSISTANTIA.css';
+// ChatBot.jsx
+import { useState, useRef, useEffect } from "react";
 
-const ASSISTANTIA = () => {
+export default function ChatBot() {
   const [messages, setMessages] = useState([
-    { 
-      id: 1,
-      role: 'assistant', 
-      content: 'Bonjour ! Je suis votre assistant IA spécialisé en recrutement et carrière. Comment puis-je vous aider aujourd\'hui ? 😊',
-      timestamp: new Date().toLocaleTimeString()
+    {
+      role: "assistant",
+      content: "Bonjour ! Je suis votre assistant recrutement. Uploadez votre CV dans votre profil et je vous trouverai les offres les plus compatibles avec votre profil. Comment puis-je vous aider ?"
     }
   ]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
-  const [suggestions, setSuggestions] = useState([
-    "Comment rédiger un bon CV ?",
-    "Préparer un entretien d'embauche",
-    "Négocier son salaire",
-    "Les erreurs à éviter en entretien"
-  ]);
-  const messagesEndRef = useRef(null);
-  const inputRef = useRef(null);
+  const [open, setOpen] = useState(false);
+  const bottomRef = useRef(null);
 
   useEffect(() => {
-    scrollToBottom();
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const sendMessage = async () => {
+    if (!input.trim() || loading) return;
 
-  const sendMessage = async (messageText = null) => {
-    const textToSend = messageText || input;
-    if (!textToSend.trim() || loading) return;
-
-    // Ajouter le message de l'utilisateur
-    const userMessage = { 
-      id: Date.now(),
-      role: 'user', 
-      content: textToSend,
-      timestamp: new Date().toLocaleTimeString()
-    };
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
+    const userMessage = input.trim();
+    setInput("");
+    setMessages(prev => [...prev, { role: "user", content: userMessage }]);
     setLoading(true);
-    setIsTyping(true);
+
+    // Ajouter un message vide pour le streaming
+    setMessages(prev => [...prev, { role: "assistant", content: "" }]);
 
     try {
-      const response = await axios.post('http://localhost:3000/chat', {
-  message: textToSend
-});
-      setIsTyping(false);
-      
-      const assistantMessage = {
-        id: Date.now() + 1,
-        role: 'assistant', 
-        content: response.data.reply || response.data.reply,
-        timestamp: new Date().toLocaleTimeString()
-      };
-      
-      setMessages(prev => [...prev, assistantMessage]);
-      
-      // Suggestions dynamiques basées sur la conversation
-      updateSuggestions(textToSend, response.data.reply);
-      
-    } catch (error) {
-      console.error('Erreur:', error);
-      setIsTyping(false);
-      setMessages(prev => [...prev, { 
-        id: Date.now() + 1,
-        role: 'assistant', 
-        content: '❌ Désolé, une erreur est survenue. Veuillez réessayer ou contacter le support.',
-        timestamp: new Date().toLocaleTimeString()
-      }]);
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:3000/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ message: userMessage })
+      });
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n\n");
+        buffer = lines.pop(); // Garder le dernier fragment incomplet
+
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            try {
+              const data = JSON.parse(line.replace("data: ", ""));
+              if (data.token) {
+                setMessages(prev => {
+                  const updated = [...prev];
+                  updated[updated.length - 1] = {
+                    ...updated[updated.length - 1],
+                    content: updated[updated.length - 1].content + data.token
+                  };
+                  return updated;
+                });
+              }
+            } catch {}
+          }
+        }
+      }
+    } catch (err) {
+      setMessages(prev => {
+        const updated = [...prev];
+        updated[updated.length - 1] = {
+          role: "assistant",
+          content: "Désolé, une erreur est survenue. Veuillez réessayer."
+        };
+        return updated;
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  const updateSuggestions = (userMessage, assistantReply) => {
-    // Suggestions contextuelles
-    if (userMessage.toLowerCase().includes('cv')) {
-      setSuggestions([
-        "Modèle de CV moderne",
-        "CV pour débutant",
-        "Compétences à mettre en avant",
-        "Photo sur le CV ?"
-      ]);
-    } else if (userMessage.toLowerCase().includes('entretien')) {
-      setSuggestions([
-        "Questions pièges en entretien",
-        "Tenue pour un entretien",
-        "Pitch de présentation",
-        "Questions à poser au recruteur"
-      ]);
-    } else if (userMessage.toLowerCase().includes('salaire')) {
-      setSuggestions([
-        "Comment négocier ?",
-        "Salaire moyen par métier",
-        "Demander une augmentation",
-        "Avantages négociables"
-      ]);
-    } else {
-      setSuggestions([
-        "Comment rédiger un bon CV ?",
-        "Préparer un entretien d'embauche",
-        "Négocier son salaire",
-        "Les erreurs à éviter en entretien"
-      ]);
-    }
-  };
-
-  const clearChat = () => {
-    setMessages([
-      { 
-        id: Date.now(),
-        role: 'assistant', 
-        content: 'Bonjour ! Je suis votre assistant IA spécialisé en recrutement et carrière. Comment puis-je vous aider aujourd\'hui ? 😊',
-        timestamp: new Date().toLocaleTimeString()
-      }
-    ]);
-  };
-
-  const copyMessage = (content) => {
-    navigator.clipboard.writeText(content);
-    // Optionnel: ajouter une notification
-    const notification = document.createElement('div');
-    notification.className = 'copy-notification';
-    notification.textContent = '📋 Message copié !';
-    document.body.appendChild(notification);
-    setTimeout(() => notification.remove(), 2000);
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
+  const resetChat = async () => {
+    const token = localStorage.getItem("token");
+    await fetch("http://localhost:3000/chat/reset", {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    setMessages([{
+      role: "assistant",
+      content: "Conversation réinitialisée. Comment puis-je vous aider ?"
+    }]);
   };
 
   return (
-    <div className="chatbot-container">
-      <div className="chatbot">
-        {/* Header amélioré */}
-        <div className="chatbot-header">
-          <div className="header-left">
-            <div className="bot-avatar">
-              <span>🤖</span>
-              <div className="online-dot"></div>
-            </div>
-            <div className="header-info">
-              <h2>Assistant IA Recrutement</h2>
-              <p>En ligne • Réponse immédiate</p>
-            </div>
-          </div>
-          <div className="header-actions">
-            <button className="clear-btn" onClick={clearChat} title="Nouvelle conversation">
-              🗑️
-            </button>
-            <button className="close-btn" onClick={() => window.close()} title="Fermer">
-              ✕
-            </button>
-          </div>
-        </div>
+    <>
+      {/* Bouton flottant */}
+      <button
+        onClick={() => setOpen(!open)}
+        style={{
+          position: "fixed", bottom: 24, right: 24,
+          width: 56, height: 56, borderRadius: "50%",
+          background: "#4F46E5", color: "#fff",
+          border: "none", cursor: "pointer",
+          fontSize: 24, boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+          zIndex: 1000
+        }}
+      >
+        {open ? "✕" : "💬"}
+      </button>
 
-        {/* Messages */}
-        <div className="chatbot-messages">
-          {messages.map((msg) => (
-            <div key={msg.id} className={`message-wrapper ${msg.role}`}>
-              <div className={`message ${msg.role}`}>
-                <div className="message-avatar">
-                  {msg.role === 'assistant' ? '🤖' : '👤'}
-                </div>
-                <div className="message-bubble">
-                  <div className="message-content">
-                    {msg.content.split('\n').map((line, i) => (
-                      <React.Fragment key={i}>
-                        {line}
-                        {i < msg.content.split('\n').length - 1 && <br />}
-                      </React.Fragment>
-                    ))}
-                  </div>
-                  <div className="message-footer">
-                    <span className="message-time">{msg.timestamp}</span>
-                    <button 
-                      className="copy-btn" 
-                      onClick={() => copyMessage(msg.content)}
-                      title="Copier"
-                    >
-                      📋
-                    </button>
-                  </div>
+      {/* Fenêtre de chat */}
+      {open && (
+        <div style={{
+          position: "fixed", bottom: 90, right: 24,
+          width: 380, height: 520,
+          background: "#fff", borderRadius: 16,
+          boxShadow: "0 8px 32px rgba(0,0,0,0.15)",
+          display: "flex", flexDirection: "column",
+          zIndex: 999, overflow: "hidden",
+          border: "1px solid #e5e7eb"
+        }}>
+          {/* Header */}
+          <div style={{
+            background: "#4F46E5", color: "#fff",
+            padding: "14px 16px",
+            display: "flex", justifyContent: "space-between", alignItems: "center"
+          }}>
+            <div>
+              <div style={{ fontWeight: 600, fontSize: 15 }}>Assistant Recrutement</div>
+              <div style={{ fontSize: 12, opacity: 0.8 }}>Analyse CV + Matching offres</div>
+            </div>
+            <button
+              onClick={resetChat}
+              style={{ background: "rgba(255,255,255,0.2)", border: "none",
+                color: "#fff", borderRadius: 8, padding: "4px 10px",
+                cursor: "pointer", fontSize: 12 }}
+            >
+              Réinitialiser
+            </button>
+          </div>
+
+          {/* Messages */}
+          <div style={{
+            flex: 1, overflowY: "auto",
+            padding: 16, display: "flex", flexDirection: "column", gap: 12
+          }}>
+            {messages.map((msg, i) => (
+              <div key={i} style={{
+                display: "flex",
+                justifyContent: msg.role === "user" ? "flex-end" : "flex-start"
+              }}>
+                <div style={{
+                  maxWidth: "80%",
+                  padding: "10px 14px",
+                  borderRadius: msg.role === "user" ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
+                  background: msg.role === "user" ? "#4F46E5" : "#f3f4f6",
+                  color: msg.role === "user" ? "#fff" : "#111827",
+                  fontSize: 14, lineHeight: 1.5,
+                  whiteSpace: "pre-wrap"
+                }}>
+                  {msg.content}
+                  {loading && i === messages.length - 1 && msg.role === "assistant" && msg.content === "" && (
+                    <span style={{ opacity: 0.5 }}>...</span>
+                  )}
                 </div>
               </div>
-            </div>
-          ))}
-          
-          {isTyping && (
-            <div className="message-wrapper assistant">
-              <div className="message assistant">
-                <div className="message-avatar">🤖</div>
-                <div className="message-bubble">
-                  <div className="typing-indicator">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
-
-        {/* Suggestions */}
-        {suggestions.length > 0 && messages.length < 3 && (
-          <div className="suggestions">
-            <p className="suggestions-title">💡 Suggestions :</p>
-            <div className="suggestions-list">
-              {suggestions.map((suggestion, index) => (
-                <button
-                  key={index}
-                  className="suggestion-btn"
-                  onClick={() => sendMessage(suggestion)}
-                >
-                  {suggestion}
-                </button>
-              ))}
-            </div>
+            ))}
+            <div ref={bottomRef} />
           </div>
-        )}
 
-        {/* Input amélioré */}
-        <div className="chatbot-input">
-          <div className="input-container">
-            <textarea
-              ref={inputRef}
+          {/* Input */}
+          <div style={{
+            padding: "12px 16px",
+            borderTop: "1px solid #e5e7eb",
+            display: "flex", gap: 8
+          }}>
+            <input
               value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={handleKeyPress}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && sendMessage()}
               placeholder="Posez votre question..."
-              rows={1}
               disabled={loading}
-              className="message-input"
+              style={{
+                flex: 1, padding: "10px 14px",
+                borderRadius: 24, border: "1px solid #d1d5db",
+                fontSize: 14, outline: "none",
+                background: loading ? "#f9fafb" : "#fff"
+              }}
             />
-            <div className="input-actions">
-              <button 
-                className="send-btn" 
-                onClick={() => sendMessage()} 
-                disabled={loading || !input.trim()}
-              >
-                {loading ? '⏳' : '📤'}
-              </button>
-            </div>
+            <button
+              onClick={sendMessage}
+              disabled={loading || !input.trim()}
+              style={{
+                width: 40, height: 40,
+                borderRadius: "50%", background: "#4F46E5",
+                border: "none", color: "#fff",
+                cursor: loading ? "not-allowed" : "pointer",
+                fontSize: 18, opacity: loading ? 0.6 : 1
+              }}
+            >
+              ↑
+            </button>
           </div>
-          <p className="input-hint">
-            Appuyez sur Entrée pour envoyer • Maj+Entrée pour sauter une ligne
-          </p>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
-};
-
-export default ASSISTANTIA;
+}

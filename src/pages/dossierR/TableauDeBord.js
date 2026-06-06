@@ -1,4 +1,4 @@
-// TableauB.jsx - Version sans le graphique des offres les moins demandées
+// TableauB.jsx - Version complète corrigée
 import { useEffect, useState } from "react";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, 
@@ -14,18 +14,18 @@ export default function TableauDeBord() {
   const [statsGlobales, setStatsGlobales] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
+  const [recruteurNom, setRecruteurNom] = useState('');
 
   const token = localStorage.getItem("token");
   const decoded = token ? jwtDecode(token) : null;
 
-  // Configuration des couleurs en niveaux de gris
   const chartColors = {
-    grid: '#E5E7EB',        // gray-200
-    text: '#6B7280',        // gray-500
-    barPrimary: '#374151',  // gray-700
-    barSecondary: '#9CA3AF', // gray-400
-    linePrimary: '#374151',  // gray-700
-    lineSecondary: '#6B7280', // gray-500
+    grid: '#E5E7EB',
+    text: '#6B7280',
+    barPrimary: '#4B5563',
+    barSecondary: '#8A9AA8',
+    linePrimary: '#4B5563',
+    lineSecondary: '#8A9AA8',
     tooltipBg: '#FFFFFF',
     tooltipBorder: '#E5E7EB'
   };
@@ -33,6 +33,17 @@ export default function TableauDeBord() {
   useEffect(() => {
     if (decoded?.role === "RECRUTEUR") {
       fetchAllData();
+      
+      // Récupérer le nom complet du recruteur depuis le token
+      if (decoded.prenom && decoded.nom) {
+        setRecruteurNom(`${decoded.prenom} ${decoded.nom}`);
+      } else if (decoded.prenom) {
+        setRecruteurNom(decoded.prenom);
+      } else if (decoded.nom) {
+        setRecruteurNom(decoded.nom);
+      } else {
+        setRecruteurNom('Recruteur');
+      }
     }
   }, [token]);
 
@@ -71,20 +82,17 @@ export default function TableauDeBord() {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('fr-FR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
+    if (!dateString) return '—';
+    return new Date(dateString).toLocaleDateString('fr-FR', {
+      day: '2-digit', month: '2-digit', year: 'numeric'
     });
   };
 
   if (loading) {
     return (
-      <div className="dashboard-container">
-        <div className="loading-state">
-          <div className="loading-spinner"></div>
+      <div className="dashboard">
+        <div className="loading">
+          <div className="spinner"></div>
           <p>Chargement de votre tableau de bord...</p>
         </div>
       </div>
@@ -92,46 +100,45 @@ export default function TableauDeBord() {
   }
 
   return (
-    <div className="dashboard-container">
-      <div className="dashboard-header">
+    <div className="dashboard">
+      {/* Header avec nom du recruteur */}
+      <div className="header">
         <div>
-          <h1>Tableau de bord Recruteur</h1>
-          <p>Bienvenue dans votre espace de gestion 👋</p>
+          <h1>Tableau de bord</h1>
+          <p className="subtitle">Bonjour {recruteurNom}</p>
         </div>
         {statsGlobales && (
-          <div className="header-stats">
-            <div className="mini-stat">
-              <span className="stat-value">{statsGlobales.total_offres}</span>
-              <span className="stat-label">Offres</span>
+          <div className="stats">
+            <div className="stat">
+              <span className="stat-number">{statsGlobales.total_offres}</span>
+              <span className="stat-label">offres</span>
             </div>
-            <div className="mini-stat">
-              <span className="stat-value">{statsGlobales.total_candidatures}</span>
-              <span className="stat-label">Candidatures</span>
+            <div className="stat-divider"></div>
+            <div className="stat">
+              <span className="stat-number">{statsGlobales.total_candidatures}</span>
+              <span className="stat-label">candidatures</span>
             </div>
-            <div className="mini-stat">
-              <span className="stat-value">{statsGlobales.taux_acceptation}%</span>
-              <span className="stat-label">Taux acceptation</span>
+            <div className="stat-divider"></div>
+            <div className="stat">
+              <span className="stat-number">{statsGlobales.taux_acceptation}%</span>
+              <span className="stat-label">acceptation</span>
             </div>
-            <div className="mini-stat">
-              <span className="stat-value">{statsGlobales.moyenne_candidatures_par_offre}</span>
-              <span className="stat-label">Moy/offre</span>
+            <div className="stat-divider"></div>
+            <div className="stat">
+              <span className="stat-number">{statsGlobales.moyenne_candidatures_par_offre}</span>
+              <span className="stat-label">moy/offre</span>
             </div>
           </div>
         )}
       </div>
 
+      {/* Tabs */}
       <div className="tabs">
         <button 
           className={`tab ${activeTab === 'overview' ? 'active' : ''}`}
           onClick={() => setActiveTab('overview')}
         >
-          Vue d'ensemble
-        </button>
-        <button 
-          className={`tab ${activeTab === 'demand' ? 'active' : ''}`}
-          onClick={() => setActiveTab('demand')}
-        >
-          Analyse des demandes
+          Aperçu
         </button>
         <button 
           className={`tab ${activeTab === 'offres' ? 'active' : ''}`}
@@ -141,80 +148,100 @@ export default function TableauDeBord() {
         </button>
       </div>
 
+      {/* Vue Aperçu */}
       {activeTab === 'overview' && (
         <>
-          <div className="charts-grid">
-            <div className="chart-card full-width">
-              <h3>🏆 Offres les plus demandées</h3>
-              <ResponsiveContainer width="100%" height={350}>
-                <BarChart data={topOffres}>
-                  <CartesianGrid stroke={chartColors.grid} strokeDasharray="3 3" />
-                  <XAxis 
-                    dataKey="titre" 
-                    tick={{ fill: chartColors.text, fontSize: 12 }}
-                    angle={-45}
-                    textAnchor="end"
-                    height={80}
-                  />
-                  <YAxis tick={{ fill: chartColors.text, fontSize: 12 }} />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: chartColors.tooltipBg, 
-                      border: `1px solid ${chartColors.tooltipBorder}`,
-                      borderRadius: '8px',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
-                    }}
-                  />
-                  <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '16px' }} />
-                  <Bar 
-                    dataKey="total_candidatures" 
-                    name="Candidatures" 
-                    fill={chartColors.barPrimary}
-                    radius={[4, 4, 0, 0]}
-                  />
-                  <Bar 
-                    dataKey="acceptees" 
-                    name="Acceptées" 
-                    fill={chartColors.barSecondary}
-                    radius={[4, 4, 0, 0]}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
+          <div className="card">
+            <div className="card-header">
+              <h3>Offres les plus demandées</h3>
             </div>
-          </div>
-
-          <div className="chart-card full-width">
-            <h3>📈 Évolution des candidatures</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={evolution}>
-                <CartesianGrid stroke={chartColors.grid} strokeDasharray="3 3" />
-                <XAxis dataKey="mois" tick={{ fill: chartColors.text, fontSize: 12 }} />
-                <YAxis tick={{ fill: chartColors.text, fontSize: 12 }} />
+            <ResponsiveContainer width="100%" height={340}>
+              <BarChart data={topOffres}>
+                <CartesianGrid stroke={chartColors.grid} vertical={false} />
+                <XAxis 
+                  dataKey="titre" 
+                  tick={{ fill: chartColors.text, fontSize: 11 }}
+                  axisLine={false}
+                  tickLine={false}
+                  angle={-40}
+                  textAnchor="end"
+                  height={80}
+                />
+                <YAxis 
+                  tick={{ fill: chartColors.text, fontSize: 11 }}
+                  axisLine={false}
+                  tickLine={false}
+                />
                 <Tooltip 
                   contentStyle={{ 
-                    backgroundColor: chartColors.tooltipBg, 
-                    border: `1px solid ${chartColors.tooltipBorder}`,
-                    borderRadius: '8px'
+                    border: '1px solid #E5E7EB', 
+                    borderRadius: 8,
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                    fontSize: 12
                   }}
                 />
-                <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '16px' }} />
+                <Legend wrapperStyle={{ fontSize: 11, paddingTop: 12 }} />
+                <Bar 
+                  dataKey="total_candidatures" 
+                  name="Candidatures" 
+                  fill={chartColors.barPrimary}
+                  radius={[4, 4, 0, 0]}
+                  barSize={28}
+                />
+                <Bar 
+                  dataKey="acceptees" 
+                  name="Acceptées" 
+                  fill={chartColors.barSecondary}
+                  radius={[4, 4, 0, 0]}
+                  barSize={28}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="card">
+            <div className="card-header">
+              <h3>Évolution des candidatures</h3>
+            </div>
+            <ResponsiveContainer width="100%" height={280}>
+              <LineChart data={evolution}>
+                <CartesianGrid stroke={chartColors.grid} vertical={false} />
+                <XAxis 
+                  dataKey="mois" 
+                  tick={{ fill: chartColors.text, fontSize: 11 }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <YAxis 
+                  tick={{ fill: chartColors.text, fontSize: 11 }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <Tooltip 
+                  contentStyle={{ 
+                    border: '1px solid #E5E7EB', 
+                    borderRadius: 8,
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
+                  }}
+                />
+                <Legend wrapperStyle={{ fontSize: 11, paddingTop: 12 }} />
                 <Line 
                   type="monotone" 
                   dataKey="nombre_candidatures" 
                   name="Candidatures" 
                   stroke={chartColors.linePrimary} 
-                  strokeWidth={2.5}
-                  dot={{ fill: chartColors.linePrimary, strokeWidth: 2, r: 4 }}
-                  activeDot={{ r: 6 }}
+                  strokeWidth={1.8}
+                  dot={{ r: 3, fill: chartColors.linePrimary, strokeWidth: 0 }}
+                  activeDot={{ r: 5 }}
                 />
                 <Line 
                   type="monotone" 
                   dataKey="acceptees" 
                   name="Acceptées" 
                   stroke={chartColors.lineSecondary} 
-                  strokeWidth={2.5}
-                  dot={{ fill: chartColors.lineSecondary, strokeWidth: 2, r: 4 }}
-                  activeDot={{ r: 6 }}
+                  strokeWidth={1.8}
+                  dot={{ r: 3, fill: chartColors.lineSecondary, strokeWidth: 0 }}
+                  activeDot={{ r: 5 }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -222,92 +249,50 @@ export default function TableauDeBord() {
         </>
       )}
 
-      {activeTab === 'demand' && (
-        <div className="demand-analysis">
-          <div className="ranking-section">
-            <h3>🎯 Analyse comparative</h3>
-            <div className="ranking-grid">
-              <div className="ranking-card best">
-                <div className="ranking-icon">🥇</div>
-                <h4>Plus demandée</h4>
-                {topOffres[0] && (
-                  <>
-                    <p className="offre-title">{topOffres[0].titre}</p>
-                    <p className="stat">{topOffres[0].total_candidatures} candidatures</p>
-                    <p className="taux">
-                      Taux succès: {Math.round((topOffres[0].acceptees / topOffres[0].total_candidatures) * 100)}%
-                    </p>
-                  </>
-                )}
-              </div>
-              <div className="ranking-card avg">
-                <div className="ranking-icon">⭐</div>
-                <h4>Moyenne générale</h4>
-                <p className="stat">{statsGlobales?.moyenne_candidatures_par_offre} candidatures/offre</p>
-                <p className="taux">Taux acceptation: {statsGlobales?.taux_acceptation}%</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="advice-section">
-            <h3>💡 Conseils personnalisés</h3>
-            <div className="advice-grid">
-              {statsGlobales?.taux_acceptation < 30 && (
-                <div className="advice-card info">
-                  <span className="advice-icon">💪</span>
-                  <div>
-                    <strong>Taux d'acceptation faible</strong>
-                    <p>Seulement {statsGlobales.taux_acceptation}% de vos candidatures sont acceptées. Revoyez vos critères de sélection.</p>
-                  </div>
-                </div>
-              )}
-              {topOffres[0] && topOffres[0].total_candidatures > 20 && (
-                <div className="advice-card success">
-                  <span className="advice-icon">🎯</span>
-                  <div>
-                    <strong>Offre très populaire</strong>
-                    <p>"{topOffres[0].titre}" a reçu {topOffres[0].total_candidatures} candidatures. Utilisez un système de pré-sélection.</p>
-                  </div>
-                </div>
-              )}
-              {topOffres.length > 0 && topOffres[topOffres.length - 1]?.total_candidatures === 0 && (
-                <div className="advice-card warning">
-                  <span className="advice-icon">⚠️</span>
-                  <div>
-                    <strong>Offre sans candidature</strong>
-                    <p>Certaines offres n'ont reçu aucune candidature. Envisagez de modifier le titre ou la description.</p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
+      {/* Vue Mes offres */}
       {activeTab === 'offres' && (
-        <div className="recent-offres">
-          <h2>Mes offres</h2>
+        <div className="offres">
           {offres.length === 0 ? (
-            <p className="empty-message">Aucune offre publiée</p>
+            <div className="empty">
+              <p>Aucune offre publiée</p>
+            </div>
           ) : (
-            offres.map((offre) => (
-              <div key={offre.id} className="offre-item">
-                <div className="offre-header">
-                  <h4>{offre.titre}</h4>
-                  <span className={`status-badge ${offre.total_candidatures > 0 ? 'has-candidatures' : 'no-candidatures'}`}>
-                    {offre.total_candidatures || 0} candidature(s)
-                  </span>
+            offres.map((offre) => {
+              // Déterminer la classe du badge
+              let countClass = '';
+              if (offre.total_candidatures >= 20) countClass = 'high';
+              else if (offre.total_candidatures >= 10) countClass = 'medium';
+              else if (offre.total_candidatures > 0) countClass = 'low';
+              
+              return (
+                <div key={offre.id} className="offre">
+                  <div className="offre-header">
+                    <div>
+                      <h4>{offre.titre}</h4>
+                      <span className="offre-date">Publiée le {formatDate(offre.date_creation)}</span>
+                    </div>
+                    <span className={`offre-count ${countClass}`}>
+                      {offre.total_candidatures || 0} candidature(s)
+                    </span>
+                  </div>
+                  <p className="offre-description">{offre.description}</p>
+                  <div className="offre-stats">
+                    <span className="stat-waiting">⏳ En attente: <strong>{offre.en_attente || 0}</strong></span>
+                    <span className="stat-accepted">✅ Acceptées: <strong>{offre.acceptees || 0}</strong></span>
+                    <span className="stat-rejected">❌ Refusées: <strong>{offre.refusees || 0}</strong></span>
+                    <span className="stat-rate">📊 Taux: <strong>{offre.taux_acceptation || 0}%</strong></span>
+                  </div>
+                  <div className="offre-progress">
+                    <div className="progress-bar-bg">
+                      <div 
+                        className="progress-bar-fill" 
+                        style={{ width: `${offre.taux_acceptation || 0}%` }}
+                      ></div>
+                    </div>
+                  </div>
                 </div>
-                <p className="offre-date">Publiée le {formatDate(offre.date_creation)}</p>
-                <p className="offre-description">{offre.description}</p>
-                <div className="offre-stats-mini">
-                  <div className="stat-item">📊 En attente: {offre.en_attente || 0}</div>
-                  <div className="stat-item">✅ Acceptées: {offre.acceptees || 0}</div>
-                  <div className="stat-item">❌ Refusées: {offre.refusees || 0}</div>
-                  <div className="stat-item">📈 Taux: {offre.taux_acceptation || 0}%</div>
-                </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       )}

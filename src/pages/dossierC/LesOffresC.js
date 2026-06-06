@@ -27,7 +27,7 @@ export default function LesOffresC() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [applications, setApplications] = useState({});
   const [stats, setStats] = useState({ total: 0, postulees: 0 });
-  const [filterWeek, setFilterWeek] = useState(false); // Nouvel état pour le filtre semaine
+  const [filterWeek, setFilterWeek] = useState(false);
   const fileInputRef = useRef(null);
 
   const token = localStorage.getItem("token");
@@ -43,7 +43,6 @@ export default function LesOffresC() {
         const data = await res.json();
 
         if (Array.isArray(data)) {
-          // Trier par défaut par date récente
           const sortedData = [...data].sort((a, b) => 
             new Date(b.date_publication) - new Date(a.date_publication)
           );
@@ -92,7 +91,6 @@ export default function LesOffresC() {
     }
   };
 
-  // Fonction pour vérifier si une date est dans la dernière semaine
   const isInLastWeek = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -100,18 +98,15 @@ export default function LesOffresC() {
     return date >= oneWeekAgo;
   };
 
-  // Filtrer et trier les offres
   const getFilteredAndSortedOffres = () => {
     let filtered = offres.filter((o) => 
       (o.titre || "").toLowerCase().includes(search.toLowerCase())
     );
 
-    // Appliquer le filtre semaine si activé
     if (filterWeek) {
       filtered = filtered.filter(o => isInLastWeek(o.date_publication));
     }
 
-    // Trier par date récente (toujours)
     filtered.sort((a, b) => new Date(b.date_publication) - new Date(a.date_publication));
 
     return filtered;
@@ -119,7 +114,6 @@ export default function LesOffresC() {
 
   const filteredOffres = getFilteredAndSortedOffres();
 
-  // Fonction pour basculer le filtre semaine
   const toggleWeekFilter = () => {
     setFilterWeek(!filterWeek);
   };
@@ -238,102 +232,89 @@ export default function LesOffresC() {
 
   return (
     <div className="les-offres-container">
-      {/* Header avec stats */}
-      {/* Header organisé */}
-<div className="page-header">
-  {/* Ligne 1 : Titre et stats */}
-  <div className="header-row">
-    <div className="header-left">
-      <h1 className="page-title">
-        <MdWork className="title-icon" />
-        Offres d'emploi
-      </h1>
-      
-      <div className="header-stats">
-        <div className="stat-item">
-          <FaBriefcase className="stat-icon" />
-          <span className="stat-label">Total</span>
-          <span className="stat-value">{stats.total}</span>
+      {/* Header avec stats et filtres */}
+      <div className="page-header">
+        {/* Première ligne : Titre et stats */}
+        <div className="header-row">
+          <div className="title-wrapper">
+            <MdWork className="title-icon" />
+            <h1 className="page-title">Offres d'emploi</h1>
+          </div>
+          
+          <div className="stats-wrapper">
+            <div className="stat-card">
+              <FaBriefcase className="stat-card-icon" />
+              <div className="stat-card-info">
+                <span className="stat-card-label">Total</span>
+                <span className="stat-card-value">{stats.total}</span>
+              </div>
+            </div>
+            <div className="stat-card success">
+              <FaCheckCircle className="stat-card-icon" />
+              <div className="stat-card-info">
+                <span className="stat-card-label">Postulées</span>
+                <span className="stat-card-value">{stats.postulees}</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="stat-divider"></div>
-        <div className="stat-item">
-          <FaCheckCircle className="stat-icon" style={{ color: '#10B981' }} />
-          <span className="stat-label">Postulées</span>
-          <span className="stat-value">{stats.postulees}</span>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  {/* Ligne 2 : Recherche, filtre et informations */}
-  <div className="header-row">
-    <div className="search-filter-group">
-      <div className="search-wrapper">
-        <FaSearch className="search-icon" />
-        <input
-          type="text"
-          placeholder="Rechercher par titre..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="search-input"
-        />
-        {search && (
-          <button className="clear-search" onClick={() => setSearch("")}>
-            <FaTimes />
-          </button>
+        {/* Deuxième ligne : 3 filtres alignés */}
+        <div className="filters-row">
+          {/* Filtre 1 : Recherche */}
+          <div className="filter-item search-item">
+            <div className="search-container">
+              <FaSearch className="search-icon" />
+              <input
+                type="text"
+                placeholder="Rechercher par titre..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="search-input"
+              />
+              {search && (
+                <button className="search-clear" onClick={() => setSearch("")}>
+                  <FaTimes />
+                </button>
+              )}
+            </div>
+          </div>
+          
+          {/* Filtre 2 : Dernière semaine */}
+          <div className="filter-item">
+            <button 
+              className={`filter-button ${filterWeek ? 'active' : ''}`}
+              onClick={toggleWeekFilter}
+            >
+              <FaFilter className="filter-icon" />
+              <span>Dernière semaine</span>
+            </button>
+          </div>
+
+          {/* Filtre 3 : Nombre d'offres */}
+          <div className="filter-item">
+            <div className="info-badge">
+              <FaSortAmountDown className="info-icon" />
+              <span className="info-text">
+                {filteredOffres.length} offre{filteredOffres.length > 1 ? 's' : ''}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Badge filtre actif (optionnel) */}
+        {filterWeek && (
+          <div className="active-filter-row">
+            <div className="active-filter-badge">
+              <FaClock />
+              <span>Filtre actif : dernière semaine</span>
+              <button onClick={() => setFilterWeek(false)}>
+                <FaTimes />
+              </button>
+            </div>
+          </div>
         )}
       </div>
-      
-      <button 
-        className={`filter-btn ${filterWeek ? 'active' : ''}`}
-        onClick={toggleWeekFilter}
-        title="Dernière semaine"
-      >
-        <FaFilter />
-        <span>Dernière semaine</span>
-      </button>
-    </div>
-
-    <div className="info-group">
-      <div className="sort-info">
-        <span className="sort-icon">☰</span>
-        <FaChevronDown className="sort-arrow" />
-        <span>{filteredOffres.length} offres</span>
-      </div>
-      
-      {filterWeek && (
-        <div className="active-filter">
-          <FaClock />
-          <span>Dernière semaine</span>
-          <button onClick={() => setFilterWeek(false)}>
-            <FaTimes />
-          </button>
-        </div>
-      )}
-    </div>
-  </div>
-</div>
-
-      {/* Barre d'information sur le tri et le filtre */}
-      {/* Barre d'information sur le tri */}
-<div className="sort-info-bar">
-  <div className="sort-info-left">
-    <span className="sort-icon-menu">☰</span>
-    <FaChevronDown className="sort-arrow" />
-    <span className="sort-text">
-      {filteredOffres.length} offre{filteredOffres.length > 1 ? 's' : ''} trouvée{filteredOffres.length > 1 ? 's' : ''}
-    </span>
-    {filterWeek && (
-      <span className="filter-badge">
-        <FaClock className="me-1" />
-        Dernière semaine
-        <button className="remove-filter" onClick={() => setFilterWeek(false)}>
-          <FaTimes />
-        </button>
-      </span>
-    )}
-  </div>
-</div>
 
       {isLoading ? (
         <div className="loading-container">
@@ -405,7 +386,6 @@ export default function LesOffresC() {
                   )}
                 </div>
 
-                {/* Recruteur */}
                 <div className="offre-recruiter">
                   <div className="recruiter-avatar">
                     <FaUserTie />
@@ -416,7 +396,6 @@ export default function LesOffresC() {
                   </div>
                 </div>
                 
-                {/* Date de publication */}
                 <div className="offre-date-section">
                   <FaCalendarAlt className="date-icon" />
                   <span className="date-text">
@@ -424,7 +403,6 @@ export default function LesOffresC() {
                   </span>
                 </div>
                 
-                {/* Description */}
                 <p className="offre-description">
                   {truncateDescription(offre.description)}
                 </p>

@@ -1,4 +1,4 @@
-/* Notifications.css - Version optimisée */
+/* Notifications.css - Version corrigée */
 
 :root {
   --primary: #4361ee;
@@ -40,13 +40,29 @@
   --transition: all 0.2s ease;
 }
 
+/* Empêcher le scroll de la page principale */
+html, body {
+  overflow: hidden;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  height: 100%;
+  overflow: hidden;
+}
+
 /* Container principal */
 .notifications-container {
   max-width: 1000px;
   margin: 0 auto;
   padding: 0 1.5rem;
   background: var(--gray-50);
-  min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 /* En-tête */
@@ -56,6 +72,7 @@
   border-bottom: 1px solid var(--gray-200);
   padding: 1rem 0;
   margin-bottom: 1.5rem;
+  flex-shrink: 0;
 }
 
 .notifications-header-content {
@@ -154,11 +171,14 @@
   border-color: var(--gray-400);
 }
 
-/* Container de la liste avec scroll */
+/* Container de la liste avec scroll - SEUL ÉLÉMENT QUI SCROLL */
 .notifications-list-container {
-  max-height: calc(100vh - var(--header-height) - 60px);
+  flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding-right: 0.5rem;
+  padding-bottom: 1rem;
+  min-height: 0;
 }
 
 /* Scrollbar personnalisée */
@@ -409,7 +429,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 60vh;
+  height: 100vh;
   gap: 1rem;
   color: var(--gray-500);
 }
@@ -423,7 +443,7 @@
   animation: spin 0.6s linear infinite;
 }
 
-/* Toast Notification */
+/* Toast Notification - Barre EN HAUT qui s'AGRANDIT */
 .notification-toast {
   position: fixed;
   top: 80px;
@@ -440,10 +460,24 @@
   animation: slideInRight 0.3s ease-out;
   border-left: 3px solid var(--primary);
   cursor: pointer;
+  overflow: hidden;
+  position: relative;
 }
 
 .notification-toast:hover {
   transform: translateX(-4px);
+}
+
+/* Barre de progression EN HAUT qui s'agrandit de 0% à 100% */
+.toast-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+  width: 0%;
+  animation: expandWidth 5s linear forwards;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 .toast-icon {
@@ -500,17 +534,6 @@
   color: var(--gray-600);
 }
 
-.toast-progress {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--primary), var(--primary-dark));
-  width: 100%;
-  animation: shrink 5s linear forwards;
-  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-}
-
 /* Animations */
 @keyframes fadeIn {
   from { opacity: 0; }
@@ -554,9 +577,14 @@
   }
 }
 
-@keyframes shrink {
-  from { width: 100%; }
-  to { width: 0%; }
+/* Animation pour la barre qui s'AGRANDIT de 0% à 100% */
+@keyframes expandWidth {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
 }
 
 .slide-in {
