@@ -20,17 +20,12 @@ export default function RCSidebar({ activeTab, setActiveTab, handleLogout }) {
         onClick={() => setActiveTab("Candidats")}  // CORRECTION: nom plus naturel
         className={activeTab === "Candidats" ? "active" : ""}  // CORRECTION
       >
-        LES CANDIDATS 
+        LES CANDIDATURES
       </button>
-      <button
-        onClick={() => setActiveTab("Analyse IA")}
-        className={activeTab === "Analyse IA" ? "active" : ""}
-      >
-        ANALYSE IA 
-      </button>
+      
 
       <button className="btn-logout" onClick={handleLogout}>
-        Déconnecter
+        Se déconnecter
       </button>
     </div>
   );

@@ -4,7 +4,7 @@ import RCSidebar from "./RCSidebar";
 import TableauDeBord from "./TableauDeBord";
 import LesOffres from "./LesOffres";
 import Candidatenrecruteur from "./Candidatenrecruteur";
-import AnalyseIA from "./AnalyseIA";
+
 
 export default function Recruteur() {
   const [activeTab, setActiveTab] = useState("Tableau de bord");
@@ -28,7 +28,7 @@ export default function Recruteur() {
   {activeTab === "Tableau de bord" && <TableauDeBord />}
   {activeTab === "Les offres" && <LesOffres />} 
   {activeTab === "Candidats" && <Candidatenrecruteur />} 
-  {activeTab === "Analyse IA" && <AnalyseIA />}
+
 </div>
     </div>
   );

@@ -1008,3 +1008,84 @@
     min-width: 900px;
   }
 }
+/* Colonne Score */
+.score-cell {
+  text-align: center;
+  font-weight: 500;
+  color: #4a4a4a;
+  background-color: #fcfcfc;
+}
+
+/* Ajustement largeur du tableau (si débordement) */
+@media (max-width: 1100px) {
+  .candidatures-table-pastel {
+    min-width: 1100px;
+  }
+}
+
+/* Score IA */
+.score-cell {
+  text-align: center;
+  min-width: 130px;
+}
+.score-container {
+  display: inline-block;
+  text-align: center;
+  width: 100%;
+}
+.score-display {
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+.score-number {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+.score-total {
+  font-size: 0.8rem;
+  color: #888;
+}
+.score-bar {
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  height: 6px;
+  overflow: hidden;
+  width: 80px;
+  margin: 0 auto;
+}
+.score-bar-fill {
+  background-color: #4caf50;
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.3s;
+}
+.score-excellent .score-bar-fill { background-color: #2e7d32; }
+.score-good .score-bar-fill { background-color: #689f38; }
+.score-average .score-bar-fill { background-color: #ff9800; }
+.score-poor .score-bar-fill { background-color: #f44336; }
+
+.analyze-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 20px;
+  color: white;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.analyze-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.button-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }

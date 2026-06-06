@@ -53,13 +53,7 @@ export default function CONSidebarducondidat({ activeTab, setActiveTab, handleLo
           LES OFFRES
         </button>
         
-        <button
-          onClick={() => setActiveTab("MONProfil")}
-          className={activeTab === "MONProfil" ? "active" : ""}
-        >
-          <span className="menu-icon"></span>
-          Mon Profil
-        </button>
+        
 
         <button
           onClick={() => setActiveTab("MesCandidatures")}
@@ -88,9 +82,16 @@ export default function CONSidebarducondidat({ activeTab, setActiveTab, handleLo
           Assistant IA
         </button>
 
+<button
+          onClick={() => setActiveTab("MONProfil")}
+          className={activeTab === "MONProfil" ? "active" : ""}
+        >
+          <span className="menu-icon"></span>
+          Mon Profil
+        </button>
         <button className="btn-logout" onClick={handleLogout}>
           <span className="menu-icon"></span>
-          Déconnecter
+          Se déconnecter
         </button>
       </div>
     </div>
