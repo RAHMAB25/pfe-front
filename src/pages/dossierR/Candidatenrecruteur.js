@@ -58,7 +58,7 @@ const Candidatenrecruteur = () => {
     }
     setAnalyzingId(candidature.candidature_id);
     try {
-      // Appel à l'API d'analyse (adapté selon ton backend)
+      // Appel à l'API d'analyse
       const response = await fetch(`http://localhost:3000/recruteur/analyze-cv/${candidature.candidature_id}`, {
         method: 'POST',
         headers: {

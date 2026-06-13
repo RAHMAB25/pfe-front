@@ -48,27 +48,15 @@ export default function ChatBot() {
         if (done) break;
 
         buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n\n");
-        buffer = lines.pop(); // Garder le dernier fragment incomplet
 
-        for (const line of lines) {
-          if (line.startsWith("data: ")) {
-            try {
-              const data = JSON.parse(line.replace("data: ", ""));
-              if (data.token) {
-                setMessages(prev => {
-                  const updated = [...prev];
-                  updated[updated.length - 1] = {
-                    ...updated[updated.length - 1],
-                    content: updated[updated.length - 1].content + data.token
-                  };
-                  return updated;
-                });
-              }
-            } catch {}
-          }
-        }
-      }
+        const data = buffer.replace("data: ", "");
+
+         setMessages(prev => {
+            const updated = [...prev];
+            updated[updated.length - 1].content = data;
+            return updated;
+          });
+       }
     } catch (err) {
       setMessages(prev => {
         const updated = [...prev];
